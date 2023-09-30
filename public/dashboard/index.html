@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <link href="style.css" rel="stylesheet"/>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <!-- Bootstrap JS and dependencies -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+</head>
+<body>
+    <nav class="navbar bg-body-tertiary">
+        <div class="container-fluid">
+          <a class="navbar-brand"><img src="assets/dnic.png" width="40"></a>
+           <!-- <button type="button" class="btn btn-primary" onclick="manualUpdateFiles()" id="updateFilesButton" style="display:none;">Update Files</button> -->
+           <button type="button" class="btn btn-primary" id="exportData">Export Data</button>
+           <script>
+            document.getElementById('exportData').addEventListener('click', function() {
+                const cardData = getCardData();
+                const exportedData = JSON.stringify(cardData, null, 2);
+                const blob = new Blob([exportedData], { type: 'application/json' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'exported_data.json';
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+            });
+
+            function getCardData() {
+                const cards = document.querySelectorAll('.card');
+                const cardData = [];
+
+                cards.forEach(card => {
+                    const title = card.querySelector('.card-title').textContent;
+                    const identifier = card.querySelector('small').textContent.replace('Identifier: ', '');
+                    const files = Array.from(card.querySelectorAll('.list-group-item')).map(item => item.textContent);
+
+                    cardData.push({ title, identifier, files });
+                });
+
+                return cardData;
+            }
+
+
+           </script>
+
+
+          <form class="d-flex" role="search">
+            <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search" id="searchInput">
+            <button class="btn btn-outline-success" type="submit">Search</button>
+          </form>
+        </div>
+      </nav>
+
+        <div class="db" id="database" style="display: flex; flex-wrap: wrap; gap: 1rem; justify-content: flex-start;">
+            <div class="card" id="card1" style="width: 18rem;">
+
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="card-title mb-0">Card title</h5>
+                    <div>
+                        <button type="button" class="btn btn-link text-dark">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button type="button" class="btn btn-link text-danger">
+                            <i class="fas fa-trash" data-toggle="tooltip" data-placement="bottom" title="Options"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="card-body">
+                    <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                </div>
+                <ul class="list-group list-group-flush" id="fileList1">
+                    <li class="list-group-item">An item</li>
+                    <li class="list-group-item">A second item</li>
+                    <li class="list-group-item">A third item</li>
+                </ul>
+                <div class="card-body">
+                    <small>Identifier: ID12345678</small>
+                </div>
+            </div>
+            
+<!-- Add Card Button -->
+<button type="button" class="btn btn-primary rounded-circle position-fixed" data-dismiss="modal" data-toggle="modal" data-target="#cardModal" style="bottom: 40px; right: 40px; scale: 1.5; z-index: 1;">
+    <i class="fas fa-plus"></i>
+  </button>
+
+<!-- Modal for adding a new card -->
+<div class="modal fade" id="cardModal" tabindex="-1" role="dialog" aria-labelledby="cardModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <!-- Form for gathering card details -->
+                <form>
+                    <div class="form-group">
+                        <label for="title">Title:</label>
+                        <input type="text" class="form-control" id="title">
+                    </div>
+                    <div class="form-group">
+                        <label for="description">Description:</label>
+                        <textarea class="form-control" id="description"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="items">Files:</label>
+                        <input type="file" class="form-control-file mt-2" id="fileInput1" accept=".csv, .txt" multiple>
+                    </div>
+                    
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" id="saveCard">Save Card</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal for editing an existing card -->
+<div class="modal fade" id="editCardModal" tabindex="-1" role="dialog" aria-labelledby="editCardModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editCardModalLabel">Edit Card</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+
+                <form>
+                    <div class="form-group">
+                        <label for="editTitle">Title:</label>
+                        <input type="text" class="form-control" id="editTitle">
+                    </div>
+                    <div class="form-group">
+                        <label for="editDescription">Description:</label>
+                        <textarea class="form-control" id="editDescription"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="editItems">Files:</label>
+                        <input type="file" class="form-control-file mt-2" id="editFileInput" accept=".csv, .txt" multiple>
+                    </div>
+                    
+                    <!-- Add this line to display file items -->
+                    <ul class="list-group list-group-flush" id="fileListEdit"></ul>
+                    
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" id="saveEditCard">Save Changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="app.js"></script>
+<script>
+// Function to save card data to local storage
+function saveCardToLocalStorage(cardId, cardData) {
+    localStorage.setItem(`card_${cardId}`, JSON.stringify(cardData));
+}
+
+// Function to delete card data from local storage
+function deleteCardFromLocalStorage(cardId) {
+    localStorage.removeItem(`card_${cardId}`);
+}
+
+// Function to generate a unique card ID
+function generateUniqueId() {
+    const timestamp = Date.now().toString();
+    return 'ID' + timestamp.slice(-8);
+}
+
+// Event listener for the search form submission
+document.querySelector('form[role="search"]').addEventListener('submit', function(event) {
+    event.preventDefault(); // Prevent default form submission behavior
+
+    const searchQuery = document.getElementById('searchInput').value.toLowerCase();
+
+    // Iterate through the cards to find a match
+    const cards = document.querySelectorAll('.card');
+    let found = false;
+
+    cards.forEach(card => {
+        const title = card.querySelector('.card-title').textContent.toLowerCase();
+        if (title.includes(searchQuery)) {
+            card.classList.add('highlighted'); // Add a CSS class to highlight the card
+            found = true;
+        } else {
+            card.classList.remove('highlighted'); // Remove the class from other cards
+        }
+    });
+
+    if (found) {
+        // Scroll to the first highlighted card
+        const highlightedCard = document.querySelector('.card.highlighted');
+        highlightedCard.scrollIntoView({ behavior: 'smooth' });
+    }
+});
+
+// Function to save card data to local storage
+function saveCardToLocalStorage(cardId, cardData) {
+    localStorage.setItem(`card_${cardId}`, JSON.stringify(cardData));
+}
+
+// Function to load card data from local storage
+function loadCardFromLocalStorage(cardId) {
+    const cardData = localStorage.getItem(`card_${cardId}`);
+    return cardData ? JSON.parse(cardData) : null;
+}
+
+// Function to delete card data from local storage
+function deleteCardFromLocalStorage(cardId) {
+    localStorage.removeItem(`card_${cardId}`);
+}
+
+// Event listener for Save Card button click
+document.getElementById('saveCard').addEventListener('click', function() {
+    // Get user input from the form
+    const title = document.getElementById('title').value;
+    const description = document.getElementById('description').value;
+    const files = document.getElementById('fileInput1').files; // Get selected files
+
+    // Generate a unique identifier
+    const cardId = generateUniqueId();
+
+    // Generate a unique identifier (timestamp with milliseconds)
+    const timestamp = Date.now().toString();
+    const uniqueId = 'ID' + timestamp.slice(-8); // Use the last 8 digits of the timestamp
+
+    // Create a new card element
+    const newCard = document.createElement('div');
+    newCard.classList.add('card');
+    newCard.style.width = '18rem';
+    newCard.id = cardId;
+
+    // Construct card content
+    newCard.innerHTML = `
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <h5 class="card-title mb-0">${title}</h5>
+                    <div>
+                        <button type="button" class="btn btn-link text-dark">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button type="button" class="btn btn-link text-danger">
+                            <i class="fas fa-trash" data-toggle="tooltip" data-placement="bottom" title="Options"></i>
+                        </button>
+                    </div>
+        </div>
+        <div class="card-body">
+            <p class="card-text">${description}</p>
+        </div>
+        <ul class="list-group list-group-flush" id="fileList1">
+            ${Array.from(files).map(file => `
+                <li class="list-group-item">
+                    <a href="${URL.createObjectURL(file)}" target="_blank">${file.name}</a>
+                </li>
+            `).join('')}
+        </ul>
+        <div class="card-body">
+            <small>Identifier: ${uniqueId}</small>
+        </div>
+    `;
+
+    // Add the new card to the database container
+    document.getElementById('database').appendChild(newCard);
+
+    // Manually remove the modal backdrop
+    $('.modal-backdrop').remove();
+
+    // Save card data to local storage
+    const cardData = {
+        title,
+        description,
+        files: Array.from(files).map(file => ({ name: file.name, url: URL.createObjectURL(file) })),
+        uniqueId
+    };
+    saveCardToLocalStorage(uniqueId, cardData);
+
+    // Close the modal
+    $('#cardModal').modal('hide');
+
+    // Clear form inputs for the next use
+    document.getElementById('title').value = '';
+    document.getElementById('description').value = '';
+    document.getElementById('fileInput1').value = '';
+});
+
+function getCardData() {
+    const cards = document.querySelectorAll('.card');
+    const cardData = [];
+
+    cards.forEach(card => {
+      const title = card.querySelector('.card-title').textContent;
+      const identifier = card.querySelector('small').textContent.replace('Identifier: ', '');
+      const files = Array.from(card.querySelectorAll('.list-group-item')).map(item => item.textContent);
+
+      cardData.push({ title, identifier, files });
+    });
+
+    return cardData;
+  }
+
+// Load existing cards from local storage on page load
+window.addEventListener('load', function() {
+    for (let i = 0; i < localStorage.length; i++) {
+        const key = localStorage.key(i);
+        if (key.startsWith('card_')) {
+            const cardData = loadCardFromLocalStorage(key.substring(5));
+            if (cardData) {
+                const { title, description, files, uniqueId } = cardData;
+                const newCard = document.createElement('div');
+                newCard.classList.add('card');
+                newCard.style.width = '18rem';
+                newCard.id = uniqueId;
+                newCard.innerHTML = `
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5 class="card-title mb-0">${title}</h5>
+                        <div>
+                            <button type="button" class="btn btn-link text-dark">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button type="button" class="btn btn-link text-danger">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <p class="card-text">${description}</p>
+                    </div>
+                    <ul class="list-group list-group-flush" id="fileList1">
+                        ${files.map(file => `
+                            <li class="list-group-item">
+                                <a href="${file.url}" target="_blank">${file.name}</a>
+                            </li>
+                        `).join('')}
+                    </ul>
+                    <div class="card-body">
+                        <small>Identifier: ${uniqueId}</small>
+                    </div>
+                `;
+                document.getElementById('database').appendChild(newCard);
+            }
+        }
+    }
+});
+
+document.addEventListener('click', function (event) {
+    if (event.target.classList.contains('fa-trash')) {
+        const cardId = event.target.closest('.card').id;
+        const confirmDelete = confirm("Are you sure you want to delete this Card?");
+        if (confirmDelete) {
+            // Delete the card from the DOM
+            const cardElement = document.getElementById(cardId);
+            cardElement.remove();
+            // Delete the card data from local storage
+            deleteCardFromLocalStorage(cardId);
+        }
+    }
+
+// Inside the event listener for the 'fa-edit' button click
+if (event.target.classList.contains('fa-edit')) {
+    const cardId = event.target.closest('.card').id;
+    const cardTitle = document.querySelector(`#${cardId} .card-title`).textContent.trim();
+    const cardDescription = document.querySelector(`#${cardId} .card-text`).textContent.trim();
+    const cardFiles = Array.from(document.querySelectorAll(`#${cardId} .list-group-item`)).map(item => item.textContent.trim());
+
+    // Pre-populate the edit modal with existing card details
+    document.getElementById('editTitle').value = cardTitle;
+    document.getElementById('editDescription').value = cardDescription;
+
+    // Open the edit modal
+    $('#editCardModal').modal('show');
+
+    // Event listener for save changes button click
+    document.getElementById('saveEditCard').addEventListener('click', function () {
+        // Get user input from the edit form
+        const newTitle = document.getElementById('editTitle').value;
+        const newDescription = document.getElementById('editDescription').value;
+        const newFiles = document.getElementById('editFileInput').files; // Get selected files
+
+        // Update card content
+        document.querySelector(`#${cardId} .card-title`).textContent = newTitle;
+        document.querySelector(`#${cardId} .card-text`).textContent = newDescription;
+
+        // Update card data in local storage
+        const editedCardData = {
+                title: newTitle,
+                description: newDescription,
+                files: newFiles ? Array.from(newFiles).map(file => ({ name: file.name, url: URL.createObjectURL(file) })) : cardData.files,
+                identifier: cardData.identifier // Keep the original identifier
+        };
+        saveCardToLocalStorage(cardId, editedCardData);
+
+        // Update file list
+        const fileListElement = document.querySelector(`#${cardId} .list-group`);
+        fileListElement.innerHTML = newFiles ? 
+            Array.from(newFiles).map(file => `
+                <li class="list-group-item">
+                    <a href="${URL.createObjectURL(file)}" target="_blank">${file.name}</a>
+                </li>
+            `).join('') : '';
+
+        // Close the edit modal
+        $('#editCardModal').modal('hide');
+    });
+}
+});
+
+</script>
+</body>
+</html>

@@ -1,0 +1,30 @@
+Sentence: the rain outside is so calming.
+
+Main Word: rain
+Noun Meaning: water falling in drops from vapor condensed in the atmosphere
+Verb Meaning: have the quality of being; (copula, used with an adjective or a predicate noun)
+Label: good
+Score: 6
+Sentiment Probabilities: {'pure bad': 0, 'bad': 0, 'medium bad': 0, 'neutral': 0, 'medium good': 0, 'good': 0, 'pure good': 0}
+Sentiment Intention: positive
+Sentiment Classification: positive
+
+Source of Familiarity:
+ - the rain outside is so calming.
+Probabilities: {'0': 1.0}
+
+Sentence: my favorite song is playing on the radio!
+
+Main Word: song
+Noun Meaning: a short musical composition with words
+Verb Meaning: have the quality of being; (copula, used with an adjective or a predicate noun)
+Label: pure good
+Score: 8
+Sentiment Probabilities: {'pure bad': 0, 'bad': 0, 'medium bad': 0, 'neutral': 0, 'medium good': 0, 'good': 0, 'pure good': 0}
+Sentiment Intention: positive
+Sentiment Classification: positive
+
+Source of Familiarity:
+ - my favorite song is playing on the radio!
+Probabilities: {'0': 1.0}
+

@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scatter Plot</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.4/dist/Chart.min.js"></script>
+</head>
+<body>
+    <canvas id="chart" width="900" height="400"></canvas>
+    <script>
+        var ctx = document.getElementById("chart").getContext("2d");
+        var scatterChart = new Chart(ctx, {
+            type: "scatter",  // Scatter Plot
+            data: {
+                datasets: [
+                    {
+                        label: "Data points",
+                        data: [{x: 1, y: 1597}, {x: 2, y: 1456}, {x: 3, y: 1908}, {x: 4, y: 896}, {x: 5, y: 755}, {x: 6, y: 453}, {x: 7, y: 1100}, {x: 8, y: 1235}, {x: 9, y: 1478}],
+                        backgroundColor: "rgba(75, 192, 192, 0.5)",
+                        pointRadius: 6
+                    }
+                ]
+            },
+            options: {
+                responsive: false,
+                scales: {
+                    xAxes: [{
+                        type: 'linear',
+                        position: 'bottom'
+                    }]
+                }
+            }
+        });
+    </script>
+</body>
+</html>

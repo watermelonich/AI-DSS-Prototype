@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scatter Plot</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.4/dist/Chart.min.js"></script>
+    <link rel="icon" href="data:;base64,iVBORw0KGgo=">
+    <script src="logistic_regression.js"></script>
+
+</head>
+<body>
+    <canvas class="chart" id="chart" width="900" height="400"></canvas>
+
+    <script>
+
+    // function sigmoid(x) {
+    //     return 1 / (1 + Math.exp(-x));
+    // }
+
+    // class LogisticRegression {
+    //     constructor(lr = 0.001, n_iters = 1000) {
+    //         this.lr = lr;
+    //         this.n_iters = n_iters;
+    //         this.weights = null;
+    //         this.bias = null;
+    //     }
+
+    //     fit(x, y) {
+    //         const n_samples = x.length;
+    //         const n_features = x[0].length;
+    //         this.weights = Array(n_features).fill(0);
+    //         this.bias = 0;
+
+    //         for (let _ = 0; _ < this.n_iters; _++) {
+    //             let linear_pred = x.map(sample => sample.reduce((acc, feature, idx) => acc + feature * this.weights[idx], 0) + this.bias);
+    //             let predictions = linear_pred.map(val => sigmoid(val));
+
+    //             let dw = Array(n_features).fill(0);
+    //             for (let i = 0; i < n_samples; i++) {
+    //                 for (let j = 0; j < n_features; j++) {
+    //                     dw[j] += (1 / n_samples) * (predictions[i] - y[i]) * x[i][j];
+    //                 }
+    //             }
+
+    //             let db = (1 / n_samples) * predictions.reduce((acc, val, idx) => acc + (val - y[idx]), 0);
+
+    //             for (let i = 0; i < n_features; i++) {
+    //                 this.weights[i] -= this.lr * dw[i];
+    //             }
+    //             this.bias -= this.lr * db;
+    //         }
+    //     }
+
+    //     predict(x) {
+    //         let linear_pred = x.map(sample => sample.reduce((acc, feature, idx) => acc + feature * this.weights[idx], 0) + this.bias);
+    //         let y_pred = linear_pred.map(val => sigmoid(val));
+    //         let class_pred = y_pred.map(val => val <= 0 ? 0 : 1);
+
+    //         return class_pred;
+    //     }
+    // }
+
+        // Function to update the chart with fetched data
+        async function updateChart() {
+            // Fetch data from the Flask route
+            const response = await fetch('/get_data');
+            const data = await response.json();
+
+            // Check if data is displayed correctly, should appear on http://127.0.0.1:300/get_data
+            // console.log(data);
+    
+            var ctx = document.getElementById("chart").getContext("2d");
+            var scatterChart = new Chart(ctx, {
+                type: "scatter",
+                data: {
+                    datasets: [
+                        {
+                            label: "Data points",
+                            data: data,
+                            backgroundColor: "rgba(75, 192, 192, 0.5)",
+                            pointRadius: 6
+                        }
+                    ]
+                },
+                options: {
+                                responsive: false,
+                                scales: {
+                        xAxes: [{
+                            type: 'linear',
+                            position: 'bottom',
+                            ticks: {
+                                stepSize: 1, // Increase this value to adjust the number of X-axis grid lines
+                                beginAtZero: true // Starts at zero
+                            }
+                        }],
+                        yAxes: [{
+                            type: 'linear',
+                            position: 'left',
+                            ticks: {
+                                stepSize: 500, // Increase this value to adjust the number of Y-axis grid lines
+                                beginAtZero: true // Starts at zero
+                            }
+                        }]
+                    }
+                }
+            });
+        }
+    
+        // Call the updateChart function to initialize the chart
+        updateChart();
+    </script>    
+    
+</body>
+</html>
