@@ -12,9 +12,9 @@ nltk.download('averaged_perceptron_tagger')
 
 # Define sentiment score ranges
 sentiments = {
-    "pure bad": range(-4, -5),
-    "bad": range(-2, -3),
-    "medium bad": range(-1, -2),
+    "pure bad": range(-5, -4),
+    "bad": range(-3, -2),
+    "medium bad": range(-2, -1),
     "neutral": range(0, 1),
     "medium good": range(2, 3),
     "good": range(3, 4),
@@ -34,7 +34,6 @@ sentiment_general = {
     "good": "positive",
     "pure good": "positive"
 }
-
 
 # Encode sentiment scores onto qubits
 def encode_sentiment(score):
@@ -90,7 +89,7 @@ def process_test_data(filename, reference_filename):
     with open(filename, 'r') as file:
         test_data = file.readlines()
 
-    with open('testdata_output.txt', 'w') as output_file, open('missing_meanings.txt', 'w') as missing_file:
+    with open('testdata_output.txt', 'w') as output_file:
         for sentence in test_data:
             words = sentence.strip().split()
             score = len(words)
@@ -142,7 +141,7 @@ def process_test_data(filename, reference_filename):
             meaning = get_word_meaning(main_word)
 
             if meaning == "Meaning not found":
-                missing_file.write(f"Sentence: {sentence}\n")
+                print("Meaning not found")
             else:
                 noun_meaning = get_word_meaning(nouns[0]) if nouns else "Noun meaning not found"
                 verb_meaning = get_word_meaning(verbs[0]) if verbs else "Verb meaning not found"
@@ -339,6 +338,7 @@ with open('testdata.txt', 'r') as file:
 
 process_test_data('testdata.txt', 'reference_data.txt')
 print("Test data processed and output written to testdata_output.txt")
+print("Missing word meanings successfully printed in missing_meanings.txt")
 
 # Display reference data for the model
 actual_labels = read_actual_labels('labels.txt')

@@ -5,7 +5,7 @@ const path = require('path');
 (async () => {
   const browser = await puppeteer.launch({ headless: "new" });
   const page = await browser.newPage();
-  await page.goto('http://127.0.0.1:3000/public/dashboard/index.html');
+  await page.goto('http://127.0.0.1:5002');
 
   const cardData = await page.evaluate(() => {
     const extractedData = [];

@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard</title>
-    <link href="style.css" rel="stylesheet"/>
+    <link href="../style.css" rel="stylesheet" type="text/css"/>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
@@ -111,7 +111,7 @@
             </div>
             <div class="modal-body">
                 <!-- Form for gathering card details -->
-                <form>
+                <form action="/upload" method="post" enctype="multipart/form-data">
                     <div class="form-group">
                         <label for="title">Title:</label>
                         <input type="text" class="form-control" id="title">
@@ -283,6 +283,8 @@ document.getElementById('saveCard').addEventListener('click', function() {
         </div>
     `;
 
+    // document.getElementById('fileUploadForm').submit();
+
     // Add the new card to the database container
     document.getElementById('database').appendChild(newCard);
 
@@ -296,6 +298,8 @@ document.getElementById('saveCard').addEventListener('click', function() {
         files: Array.from(files).map(file => ({ name: file.name, url: URL.createObjectURL(file) })),
         uniqueId
     };
+
+    // Save card data to local storage
     saveCardToLocalStorage(uniqueId, cardData);
 
     // Close the modal

@@ -7108,3 +7108,34 @@ Sentence Meaning: Meaning not found
 Sentence: I can't believe I aced that difficult test!Correct Label: good
 Sentence Meaning: Meaning not found
 
+Sentence: I love this product
+Correct Label: good
+Sentence Meaning: Meaning not found
+
+Sentence: This movie was terrible
+Correct Label: pure bad
+Sentence Meaning: Meaning not found
+
+Sentence: The weather is nice today
+Correct Label: good
+Sentence Meaning: Meaning not found
+
+Sentence: I love this product
+Correct Label: good
+Sentence Meaning: Meaning not found
+
+Sentence: This movie was terrible
+Correct Label: pure bad
+Sentence Meaning: Meaning not found
+
+Sentence: The weather is nice today
+Correct Label: good
+Sentence Meaning: Meaning not found
+
+Sentence: I love this product
+Correct Label: good
+Sentence Meaning: Meaning not found
+
+Sentence: This movie was terrible
+Correct Label: pure bad
+Sentence Meaning: Meaning not found
