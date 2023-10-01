@@ -1,4 +1,5 @@
 import numpy as np
+from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
 
 class LinearRegression:
     def __init__(self, lr = 0.001, n_iters = 1000):

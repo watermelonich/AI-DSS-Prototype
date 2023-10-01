@@ -28,3 +28,19 @@ m1 = plt.scatter(x_train, y_train, color=cmap (0.9), s=10)
 m2 = plt.scatter(x_test, y_test, color=cmap(0.5), s=10)
 plt.plot(x, y_pred_line, color='black', linewidth=2, label='Prediction')
 plt.show()
+
+# Save the results of the initial analysis to a file (e.g., predictions and MSE)
+with open('initial_analysis_results.txt', 'w') as results_file:
+    results_file.write("Predictions:\n")
+    results_file.write(str(predictions) + "\n")
+    results_file.write(f"Mean Squared Error: {mse}\n")
+
+# Load the saved results
+with open('initial_analysis_results.txt', 'r') as results_file:
+    lines = results_file.readlines()
+    predictions = [float(val) for val in lines[1].strip().split()[1:]]
+    mse = float(lines[2].split()[-1])
+
+# Re-evaluate accuracy
+new_mse = mse(y_test, predictions)
+print(f"Re-evaluated Mean Squared Error: {new_mse}")
