@@ -8,12 +8,12 @@ class PCA:
         self.mean = None
 
     def fit(self, X):
-        # mean centering
         self.mean = np.mean(X, axis=0)
-        X = X -  self.mean
+        X = X - self.mean
+        cov = np.cov(X, rowvar=False)
 
         # covariance, functions needs samples as columns
-        cov = np.cov(X.T)
+        cov = np.cov(X, rowvar=False)
 
         # eigenvectors, eigenvalues
         eigenvectors, eigenvalues = np.linalg.eig(cov)
@@ -34,35 +34,35 @@ class PCA:
         return np.dot(X, self.components.T)
 
 
-# Testing
-if __name__ == "__main__":
-    # Imports
-    import matplotlib.pyplot as plt
-    from sklearn import datasets
+# # Testing
+# if __name__ == "__main__":
+#     # Imports
+#     import matplotlib.pyplot as plt
+#     from sklearn import datasets
 
-    # data = datasets.load_digits()
-    data = datasets.load_iris()
-    X = data.data
-    y = data.target
+#     # data = datasets.load_digits()
+#     # data = datasets.load_iris()
+#     # X = data.data
+#     # y = data.target
 
-    # Project the data onto the 2 primary principal components
-    pca = PCA(2)
-    pca.fit(X)
-    X_projected = pca.transform(X)
+#     # Project the data onto the 2 primary principal components
+#     # pca = PCA(2)
+#     # pca.fit(X)
+#     # X_projected = pca.transform(X)
 
-    print("Shape of X:", X.shape)
-    print("Shape of transformed X:", X_projected.shape)
+#     # print("Shape of X:", X.shape)
+#     # print("Shape of transformed X:", X_projected.shape)
 
-    x1 = X_projected[:, 0]
-    x2 = X_projected[:, 1]
+#     # x1 = X_projected[:, 0]
+#     # x2 = X_projected[:, 1]
 
-    plt.scatter(
-        x1, x2, c=y, edgecolor="none", alpha=0.8, cmap=plt.cm.get_cmap("viridis", 3)
-    )
+#     # plt.scatter(
+#     #     x1, x2, c=y, edgecolor="none", alpha=0.8, cmap=plt.cm.get_cmap("viridis", 3)
+#     # )
 
-    plt.xlabel("Principal Component 1")
-    plt.ylabel("Principal Component 2")
-    plt.colorbar()
-    plt.show()
+#     # plt.xlabel("Principal Component 1")
+#     # plt.ylabel("Principal Component 2")
+#     # plt.colorbar()
+#     # plt.show()
 
     

@@ -1,7 +1,7 @@
 import csv
 from flask import Flask, render_template, jsonify
 # import json
-# import numpy as np
+import numpy as np
 from logist_reg import LogisticRegression
 
 app = Flask(__name__, template_folder='templates', static_folder='templates')
@@ -46,8 +46,8 @@ def logistic_regression():
     data = load_data()
 
     # Load your features (X) and labels (y) from your data
-    X = [d['x'] for d in data]
-    y = [d['y'] for d in data]
+    X = np.array([d['x'] for d in data]).reshape(-1, 1)
+    y = np.array([d['y'] for d in data])
 
     # Initialize and fit the logistic regression model
     lr_model = LogisticRegression()
@@ -60,10 +60,9 @@ def logistic_regression():
     predictions = lr_model.predict(X_test)
 
     # Prepare the data for the chart
-    chart_data = [{'x': x, 'y': y, 'prediction': prediction} for x, y, prediction in zip(X, y, predictions)]
+    chart_data = [{'x': int(x), 'y': int(y), 'prediction': int(prediction)} for x, y, prediction in zip(X.flatten().tolist(), y.tolist(), predictions)]
 
     return jsonify(chart_data=chart_data)
-
 
 @app.route("/")
 def home():

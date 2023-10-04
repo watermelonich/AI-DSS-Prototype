@@ -4,63 +4,46 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Scatter Plot</title>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.4/dist/Chart.min.js"></script>
-    <link rel="icon" href="data:;base64,iVBORw0KGgo=">
-
+    <title>Elastic Net Regressor Analysis</title>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
 </head>
 <body>
-    <canvas class="chart" id="chart" width="900" height="400"></canvas>
+    <div id="scatter-plot"></div>
+    
     <script>
-        // Function to update the chart with fetched data
-        async function updateChart() {
-            // Fetch data from the Flask route
-            const response = await fetch('/get_data');
-            const data = await response.json();
+    async function updateChart() {
+        const response = await fetch('/elastic_netregressor');
+        const data = await response.json();
 
-            // Check if data is displayed correctly, should appear on http://127.0.0.1:300/get_data
-            // console.log(data);
-    
-            var ctx = document.getElementById("chart").getContext("2d");
-            var scatterChart = new Chart(ctx, {
-                type: "line",
-                data: {
-                    datasets: [
-                        {
-                            label: "Data points",
-                            data: data,
-                            backgroundColor: "rgba(75, 192, 192, 0.5)",
-                            pointRadius: 6
-                        }
-                    ]
-                },
-                options: {
-                                responsive: false,
-                                scales: {
-                        xAxes: [{
-                            type: 'linear',
-                            position: 'bottom',
-                            ticks: {
-                                stepSize: 1, // Increase this value to adjust the number of X-axis grid lines
-                                beginAtZero: true // Starts at zero
-                            }
-                        }],
-                        yAxes: [{
-                            type: 'linear',
-                            position: 'left',
-                            ticks: {
-                                stepSize: 500, // Increase this value to adjust the number of Y-axis grid lines
-                                beginAtZero: true // Starts at zero
-                            }
-                        }]
-                    }
-                }
-            });
-        }
-    
-        // Call the updateChart function to initialize the chart
-        updateChart();
-    </script>    
-    
+        var validData = data.chart_data.filter(d => !isNaN(d.x) && !isNaN(d.y) && !isNaN(d.prediction));
+
+        var traceScatter = {
+            x: validData.map(d => d.x),
+            y: validData.map(d => d.y),
+            mode: 'lines+markers',
+            type: 'scatter',
+            name: 'Data Points'
+        };
+
+        var traceRegressor = {
+            x: validData.map(d => d.x),
+            y: validData.map(d => d.prediction),
+            mode: 'lines',
+            type: 'scatter',
+            name: 'Elastic Net Regressor Analysis'
+        };
+
+        var layout = {
+            title: 'Elastic Net Regressor Analysis',
+            xaxis: {title: 'X'},
+            yaxis: {title: 'Y'}
+        };
+
+        Plotly.newPlot('scatter-plot', [traceScatter, traceRegressor], layout);
+    }
+
+    updateChart();
+
+    </script>
 </body>
 </html>

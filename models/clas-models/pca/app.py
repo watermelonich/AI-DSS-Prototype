@@ -1,8 +1,8 @@
 import csv
 from flask import Flask, render_template, jsonify
 # import json
-# import numpy as np
-# from multi_logistreg import MultiLogisticRegression
+import numpy as np
+from pca import PCA
 
 app = Flask(__name__, template_folder='templates', static_folder='templates')
 
@@ -23,23 +23,29 @@ def get_data():
     data = load_data()
     return jsonify(data)
 
-# @app.route("/get_data")
-# def get_data():
-#     data = load_data()
+# Add a new route to perform logistic regression and return predictions
+@app.route("/pca")
+def pca_route():
+    data = load_data()
 
-#     # Load your features (X) and labels (y) from your data
-#     X = np.array([d['x'] for d in data]).reshape(-1, 1)  # Adjust the feature extraction as needed
-#     y = np.array([d['y'] for d in data])
+    # Load your features (X) from your data
+    X = np.array([d['x'] for d in data])
+    y = np.array([d['y'] for d in data])
 
-#     # Initialize and fit the ML model
-#     ml_model = MultiLogisticRegression(learning_rate=0.01, num_iterations=1000)
-#     ml_model.fit(X, y)
+    # Stack X and y to create a 2D array for PCA
+    X_stacked = np.column_stack((X, y))
 
-#     # Predict some values
-#     sample_predictions = ml_model.predict(X[:10])  # Adjust as needed
+    # Initialize and fit the PCA model
+    pca = PCA(n_components=2)
+    pca.fit(X_stacked)
 
-#     return jsonify(data=json.dumps(data), sample_predictions=sample_predictions.tolist())
+    # Perform PCA transformation on the data
+    X_transformed = pca.transform(X_stacked)
 
+    # Prepare the data for the chart
+    chart_data = [{'x': float(x[0]), 'y': float(x[1])} for x in X_transformed]
+
+    return jsonify(chart_data=chart_data)
 
 @app.route("/")
 def home():
