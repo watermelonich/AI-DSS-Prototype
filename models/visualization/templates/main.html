@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Visualizations</title>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+    <h1>Resulted Visualizations</h1>
+
+<div class="container">
+
+<!-- Logistic Regression Visualization -->
+
+<div id="box">
+    <div id="logistic-reg-chart">
+        <div id="logistic-reg-scatter-plot"></div>
+    </div>
+
+    <script>
+        async function updateLogisticRegressionChart() {
+            const response = await fetch('/logistic_regression');
+            const data = await response.json();
+
+            var traceScatter = {
+                x: data.chart_data.map(d => d.x),
+                y: data.chart_data.map(d => d.y),
+                mode: 'markers',
+                type: 'scatter',
+                name: 'Data Points'
+            };
+
+            var traceLine = {
+                x: data.chart_data.map(d => d.x),
+                y: data.chart_data.map(d => d.prediction),
+                mode: 'lines',
+                type: 'scatter',
+                name: 'Logistic Regression Analysis'
+            };
+
+            var layout = {
+                title: 'Logistic Regression Analysis',
+                xaxis: {title: 'X'},
+                yaxis: {title: 'Y'}
+            };
+
+            Plotly.newPlot('logistic-reg-scatter-plot', [traceScatter, traceLine], layout);
+        }
+
+        updateLogisticRegressionChart();
+    </script>
+</div>
+
+
+    <!-- SVM Visualization -->
+    <div id="box">
+    <div id="svm-chart">
+        <div id="svm-scatter-plot"></div>
+    </div>
+
+    <script>
+        async function updateSVMChart() {
+            const response = await fetch('/svm');
+            const data = await response.json();
+
+            var traceScatter = {
+                x: data.chart_data.map(d => d.x),
+                y: data.chart_data.map(d => d.y),
+                mode: 'markers',
+                type: 'scatter',
+                name: 'Data Points'
+            };
+
+            var traceLine = {
+                x: data.chart_data.map(d => d.x),
+                y: data.chart_data.map(d => d.prediction),
+                mode: 'lines',
+                type: 'scatter',
+                name: 'SVM Analysis'
+            };
+
+            var layout = {
+                title: 'SVM Analysis',
+                xaxis: {title: 'X'},
+                yaxis: {title: 'Y'}
+            };
+
+            Plotly.newPlot('svm-scatter-plot', [traceScatter, traceLine], layout);
+        }
+
+        updateSVMChart();
+    </script>
+    </div>
+
+    <!-- PCA Visualization -->
+
+    <div id="box">
+    <div id="pca-chart">
+        <div id="pca-scatter-plot"></div>
+    </div>
+
+    <script>
+    // Function to update the chart with fetched data
+    async function updateChart() {
+        const response = await fetch('/pca');
+        const data = await response.json();
+
+        // Extract eigenvectors and explained_variance
+        const eigenvectors = data.eigenvectors;
+        const explainedVariance = data.explained_variance;
+
+        // Biplot creation logic
+        var trace = {
+            x: [],
+            y: [],
+            mode: 'markers',
+            type: 'scatter',
+            name: 'Data Points'
+        };
+
+        // Add arrows for feature vectors (scaled eigenvectors)
+        for (var i = 0; i < eigenvectors[0].length; i++) {
+            trace.x.push(0, eigenvectors[0][i] * Math.sqrt(explainedVariance[i]));
+            trace.y.push(0, eigenvectors[1][i] * Math.sqrt(explainedVariance[i]));
+        }
+
+        var layout = {
+            title: 'PCA Biplot',
+            xaxis: {title: 'PC1'},
+            yaxis: {title: 'PC2'}
+        };
+
+        Plotly.newPlot('pca-scatter-plot', [trace], layout);
+    }
+
+    // Call the updateChart function to initialize the chart
+    updateChart();
+
+    </script>
+    </div>
+
+
+    <!-- Multi Logistic Regression Visualization -->
+    <div id="box">
+    <div id="multilogistic-chart">
+        <div id="multilogistic-scatter-plot"></div>
+    </div>
+    <script>
+        async function updateMultiLogisticChart() { // Rename the function here
+            const response = await fetch('/multilogistic_regression');
+            const data = await response.json();
+
+            var traceScatter = {
+                x: data.chart_data.map(d => d.x),
+                y: data.chart_data.map(d => d.y),
+                mode: 'markers',
+                type: 'scatter',
+                name: 'Data Points'
+            };
+
+            var traceLine = {
+                x: data.chart_data.map(d => d.x),
+                y: data.chart_data.map(d => d.prediction),
+                mode: 'lines',
+                type: 'scatter',
+                name: 'Multi-Logistic Regression Line'
+            };
+
+            var layout = {
+                title: 'Linear Regression',
+                xaxis: {title: 'X'},
+                yaxis: {title: 'Y'}
+            };
+
+            Plotly.newPlot('multilogistic-scatter-plot', [traceScatter, traceLine], layout);
+        }
+
+        updateMultiLogisticChart(); // Call the renamed function
+    </script>
+    </div>
+
+</div>
+
+
+</body>
+</html>

@@ -1,8 +1,11 @@
+![Example Image](swit.png)
+
 ## AI-DSS
 A sample of an AI-DSS (AI-Desicison Support System) a system that combines AI, data analysis, and decision support capabilities to help individuals or organizations make informed and data-driven decisions. It can be applied across various domains and industries, including healthcare, finance, marketing, supply chain management, and more...
 
 # Project Structure
 
+```
 MODELS:
 ├── clas-models
 │   ├── logistic-reg
@@ -155,6 +158,7 @@ public
 
 src
 └── scripts
+```
 
 The "MODELS" directory contains various machine learning models and tools for building AI-based decision support systems. Here's a brief description of each model:
 
