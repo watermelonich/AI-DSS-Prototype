@@ -1,6 +1,5 @@
 import numpy as np
 from collections import Counter
-import sys
 
 class Node:
     def __init__(self, feauture=None, threshold=None, left=None, right=None, *, value=None):
@@ -104,30 +103,36 @@ class DecisionTree:
         if e [node.feature] <= node.threshold:
             return self._traverse_tree(e, node.left) 
         return self._traverse_tree(e, node.right)
+
+class RandomForest:
+    def __init__(self, n_trees=10, max_depth=10, min_samples_split=2, n_feature=None):
+        self.n_trees = n_trees
+        self.max_depth = max_depth
+        self.min_samples_split = min_samples_split
+        self.n_features = n_feature
+        self.trees = []
+
+    def fit(self, X, y):
+        self.trees = []
+        for _ in range(self.n_trees):
+            tree = DecisionTree(max_depth = self.max_depth, min_samples_split = self.min_samples_split, n_features = self.n_features)
+            X_sample, y_sample = self._bootstrap_samples(X, y)
+            tree.fit(X_sample, y_sample)
+            self.trees.append(tree)
+
+    def _bootstrap_samples(self, X, y):
+        n_samples = X.shape[0]
+        idxs = np.random.choice(n_samples, n_samples, replace=True)
+        return X[idxs], y[idxs]
+
+    def _most_common_label(self, y):
+        counter = Counter(y)
+        most_common = counter.most_common(1)[0][0]
+        return most_common
+
+    def predict(self, X):
+        predictions = np.array([tree.predict(X) for tree in self.trees])
+        tree_preds = np.swapaxes(predictions, 0, 1)
+        predictions = np.array([self._most_common_label(pred) for pred in tree_preds])
+        return predictions
     
-    def _grow_tree(self, x, y, depth = 0):
-            n_samples, n_feats = x.shape
-            n_labels = len(np.unique(y))
-
-            with open("decis_tree_output.txt", "a") as f:
-                sys.stdout = f
-
-                if (depth>self.max_depth or n_labels == 1 or n_samples <= self.min_samples_split):
-                    leaf_value = self._most_common_labels(y)
-                    print(f"\nReached leaf node at depth {depth}. Predicted value: {leaf_value}\n")
-                    sys.stdout = sys.__stdout__
-                    return Node(value=leaf_value)
-
-                feat_idxs = np.random.choice(n_feats, self.n_feautures, replace=False)
-
-                best_feature, best_thresh = self._best_split(x, y, feat_idxs)
-                print(f"At depth {depth}, splitting on feature {best_feature} with threshold {best_thresh}.\n")
-
-                left_idxs, right_idxs = self._split(x[:, best_feature], best_thresh)
-
-                left = self._grow_tree(x[left_idxs, :], y[left_idxs], depth+1)
-                right = self._grow_tree(x[right_idxs, :], y[right_idxs], depth+1)
-
-                sys.stdout = sys.__stdout__
-                return Node(best_feature, best_thresh, left, right)
-            

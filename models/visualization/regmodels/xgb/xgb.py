@@ -29,22 +29,22 @@ class SimpleGradientBoostingRegressor:
 
 # Usage example
 
-# Generate some example data (replace this with your actual data)
-X = np.random.rand(100, 5)  # 100 samples, 5 features
-y = X.dot(np.array([1, 2, 3, 4, 5])) + np.random.normal(0, 1, 100)  # Linear relationship with noise
+# # Generate some example data (replace this with your actual data)
+# X = np.random.rand(100, 5)  # 100 samples, 5 features
+# y = X.dot(np.array([1, 2, 3, 4, 5])) + np.random.normal(0, 1, 100)  # Linear relationship with noise
 
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+# X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
-gb_reg = SimpleGradientBoostingRegressor(n_estimators=100, learning_rate=0.1, max_depth=3)
-gb_reg.fit(X_train, y_train)
-y_pred = gb_reg.predict(X_test)
+# gb_reg = SimpleGradientBoostingRegressor(n_estimators=100, learning_rate=0.1, max_depth=3)
+# gb_reg.fit(X_train, y_train)
+# y_pred = gb_reg.predict(X_test)
 
-mse = mean_squared_error(y_test, y_pred)
-print(f"Mean Squared Error (Simple GB): {mse}")
+# mse = mean_squared_error(y_test, y_pred)
+# print(f"Mean Squared Error (Simple GB): {mse}")
 
-import matplotlib.pyplot as plt
-plt.scatter(y_test, y_pred)
-plt.xlabel('True Values')
-plt.ylabel('Predictions')
-plt.title('True Values vs. Predictions')
-plt.show()
+# import matplotlib.pyplot as plt
+# plt.scatter(y_test, y_pred)
+# plt.xlabel('True Values')
+# plt.ylabel('Predictions')
+# plt.title('True Values vs. Predictions')
+# plt.show()

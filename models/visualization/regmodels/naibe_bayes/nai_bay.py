@@ -67,21 +67,21 @@ if __name__ == "__main__":
 
     print("Naive Bayes classification accuracy", accuracy(y_test, predictions))
 
-from sklearn.metrics import confusion_matrix
-import seaborn as sns
-import matplotlib.pyplot as plt
+# from sklearn.metrics import confusion_matrix
+# import seaborn as sns
+# import matplotlib.pyplot as plt
 
-predictions = nb.predict(X_test)
+# predictions = np.predict(X_test)
 
-# Generate confusion matrix
-conf_matrix = confusion_matrix(y_test, predictions)
+# # Generate confusion matrix
+# conf_matrix = confusion_matrix(y_test, predictions)
 
-# Plot confusion matrix
-plt.figure(figsize=(8, 6))
-sns.heatmap(conf_matrix, annot=True, fmt="d", cmap="Blues",
-            xticklabels=['Predicted 0', 'Predicted 1'],
-            yticklabels=['Actual 0', 'Actual 1'])
-plt.xlabel('Predicted')
-plt.ylabel('Actual')
-plt.title('Confusion Matrix')
-plt.show()
+# # Plot confusion matrix
+# plt.figure(figsize=(8, 6))
+# sns.heatmap(conf_matrix, annot=True, fmt="d", cmap="Blues",
+#             xticklabels=['Predicted 0', 'Predicted 1'],
+#             yticklabels=['Actual 0', 'Actual 1'])
+# plt.xlabel('Predicted')
+# plt.ylabel('Actual')
+# plt.title('Confusion Matrix')
+# plt.show()

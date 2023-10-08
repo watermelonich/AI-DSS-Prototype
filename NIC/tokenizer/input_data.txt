@@ -1,1 +1,4 @@
-I don't care.
+I love this product.,positive
+This movie was terrible.,negative
+The weather is great today.,positive
+I'm not sure about this.,neutral

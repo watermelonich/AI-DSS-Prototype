@@ -1,0 +1,138 @@
+
+Reached leaf node at depth 1. Predicted value: 0
+
+
+Reached leaf node at depth 2. Predicted value: 1
+
+
+Reached leaf node at depth 3. Predicted value: 2
+
+
+Reached leaf node at depth 4. Predicted value: 0
+
+
+Reached leaf node at depth 5. Predicted value: 1
+
+
+Reached leaf node at depth 6. Predicted value: 2
+
+
+Reached leaf node at depth 7. Predicted value: 0
+
+
+Reached leaf node at depth 8. Predicted value: 1
+
+
+Reached leaf node at depth 9. Predicted value: 2
+
+
+Reached leaf node at depth 11. Predicted value: 0
+
+
+Reached leaf node at depth 12. Predicted value: 1
+
+
+Reached leaf node at depth 13. Predicted value: 2
+
+
+Reached leaf node at depth 14. Predicted value: 0
+
+
+Reached leaf node at depth 15. Predicted value: 1
+
+
+Reached leaf node at depth 16. Predicted value: 2
+
+
+Reached leaf node at depth 17. Predicted value: 0
+
+
+Reached leaf node at depth 18. Predicted value: 1
+
+
+Reached leaf node at depth 19. Predicted value: 2
+
+
+Reached leaf node at depth 20. Predicted value: 0
+
+
+Reached leaf node at depth 21. Predicted value: 1
+
+
+Reached leaf node at depth 23. Predicted value: 2
+
+
+Reached leaf node at depth 24. Predicted value: 0
+
+
+Reached leaf node at depth 25. Predicted value: 1
+
+
+Reached leaf node at depth 26. Predicted value: 2
+
+
+Reached leaf node at depth 27. Predicted value: 0
+
+
+Reached leaf node at depth 27. Predicted value: 2
+
+At depth 26, splitting on feature 0 with threshold 26.
+
+At depth 25, splitting on feature 0 with threshold 24.
+
+At depth 24, splitting on feature 0 with threshold 23.
+
+At depth 23, splitting on feature 0 with threshold 22.
+
+At depth 22, splitting on feature 0 with threshold 21.
+
+
+Reached leaf node at depth 22. Predicted value: 1
+
+At depth 21, splitting on feature 0 with threshold 28.
+
+At depth 20, splitting on feature 0 with threshold 20.
+
+At depth 19, splitting on feature 0 with threshold 19.
+
+At depth 18, splitting on feature 0 with threshold 18.
+
+At depth 17, splitting on feature 0 with threshold 17.
+
+At depth 16, splitting on feature 0 with threshold 16.
+
+At depth 15, splitting on feature 0 with threshold 15.
+
+At depth 14, splitting on feature 0 with threshold 14.
+
+At depth 13, splitting on feature 0 with threshold 13.
+
+At depth 12, splitting on feature 0 with threshold 12.
+
+At depth 11, splitting on feature 0 with threshold 11.
+
+At depth 10, splitting on feature 0 with threshold 10.
+
+
+Reached leaf node at depth 10. Predicted value: 2
+
+At depth 9, splitting on feature 0 with threshold 29.
+
+At depth 8, splitting on feature 0 with threshold 9.
+
+At depth 7, splitting on feature 0 with threshold 8.
+
+At depth 6, splitting on feature 0 with threshold 7.
+
+At depth 5, splitting on feature 0 with threshold 6.
+
+At depth 4, splitting on feature 0 with threshold 5.
+
+At depth 3, splitting on feature 0 with threshold 4.
+
+At depth 2, splitting on feature 0 with threshold 3.
+
+At depth 1, splitting on feature 0 with threshold 2.
+
+At depth 0, splitting on feature 0 with threshold 1.
+

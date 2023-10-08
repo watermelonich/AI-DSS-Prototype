@@ -1,11 +1,25 @@
 import csv
 from flask import Flask, render_template, jsonify
 import numpy as np
+
+# Import classification models
 from clasmodels.logist_reg import LogisticRegression
 from clasmodels.svm import SVM
 from clasmodels.pca.pca import PCA
 from clasmodels.multi_logistreg import MultiLogisticRegression 
 import plotly.graph_objs as go
+
+# Import regression models
+from regmodels.decistree.decis_tree import DecisionTree
+from regmodels.elnetreg.elnet_reg import ElasticNetRegressor
+from regmodels.knn.knn import KNN
+from regmodels.l1.lasso2_reg import LassoRegressor
+from regmodels.linreg.linear_reg import LinearRegression
+from regmodels.naibe_bayes.nai_bay import NaiveBayes
+from regmodels.randomforest.rand_forest_reg import RandomForest
+from regmodels.l2.ridge2_reg import RidgeRegressor
+from regmodels.xgb.xgb import SimpleGradientBoostingRegressor
+
 from plotly.offline import plot
 
 app = Flask(__name__, template_folder='templates', static_folder='templates')
@@ -122,17 +136,245 @@ def pca():
         explained_variance=explained_variance_ratio.tolist()
     )
 
+
+# ------------------- Regression models
+
+@app.route("/decision_tree")
+def decision_tree():
+    data = load_data('regmodels/decistree/data_sample.csv')
+
+    # Load your features (X) and labels (y) from your data
+    X = np.array([d['x'] for d in data]).reshape(-1, 1)
+    y = np.array([d['y'] for d in data])
+
+    # Initialize and fit the logistic regression model
+    lr_model = DecisionTree()
+    lr_model.fit(X, y)
+
+    # Use all the data for testing (replace X_test with your actual test data)
+    X_test = X
+
+    # Predict using the logistic regression model
+    predictions = lr_model.predict(X_test)
+
+    # Prepare the data for the chart
+    chart_data = [{'x': int(x), 'y': int(y), 'prediction': int(prediction)} for x, y, prediction in zip(X.flatten().tolist(), y.tolist(), predictions)]
+
+    return jsonify(chart_data=chart_data)
+
+@app.route("/elastic_netreg")
+def elastic_netreg():
+    data = load_data('regmodels/elnetreg/data_sample.csv')
+
+    # Load your features (X) and labels (y) from your data
+    X = np.array([d['x'] for d in data]).reshape(-1, 1)
+    y = np.array([d['y'] for d in data])
+
+    # Initialize and fit the logistic regression model
+    lr_model = ElasticNetRegressor()
+    lr_model.fit(X, y)
+
+    # Use all the data for testing (replace X_test with your actual test data)
+    X_test = X
+
+    # Predict using the logistic regression model
+    predictions = lr_model.predict(X_test)
+
+    # Prepare the data for the chart
+    chart_data = [{'x': int(x) if not np.isnan(x) else None, 'y': int(y) if not np.isnan(y) else None, 'prediction': int(prediction) if not np.isnan(prediction) else None} for x, y, prediction in zip(X.flatten().tolist(), y.tolist(), predictions)]
+
+    return jsonify(chart_data=chart_data)
+
+@app.route("/knn")
+def knn():
+    data = load_data('regmodels/knn/data_sample.csv')
+
+    # Load your features (X) and labels (y) from your data
+    X = np.array([d['x'] for d in data]).reshape(-1, 1)
+    y = np.array([d['y'] for d in data])
+
+    # Initialize and fit the logistic regression model
+    lr_model = KNN()
+    lr_model.fit(X, y)
+
+    # Use all the data for testing (replace X_test with your actual test data)
+    X_test = X
+
+    # Predict using the logistic regression model
+    predictions = lr_model.predict(X_test)
+
+    # Prepare the data for the chart
+    chart_data = [{'x': int(x) if isinstance(x, (int, float)) else None, 
+                   'y': int(y) if isinstance(y, (int, float)) else None, 
+                   'prediction': int(prediction) if isinstance(prediction, (int, float)) else None} 
+                   for x, y, prediction in zip(X.flatten().tolist(), y.tolist(), predictions)]
+
+    return jsonify(chart_data=chart_data)
+
+@app.route("/l1")
+def lasso_reg():
+    data = load_data('regmodels/l1/data_sample.csv')
+
+        # Load your features (X) and labels (y) from your data
+    X = np.array([d['x'] for d in data]).reshape(-1, 1)
+    y = np.array([d['y'] for d in data])
+
+    # Initialize and fit the logistic regression model
+    lr_model = LassoRegressor()
+    lr_model.fit(X, y)
+
+    # Use all the data for testing (replace X_test with your actual test data)
+    X_test = X
+
+    # Predict using the logistic regression model
+    predictions = lr_model.predict(X_test)
+
+    # Prepare the data for the chart
+    chart_data = [{'x': int(x) if not np.isnan(x) else None, 'y': int(y) if not np.isnan(y) else None, 'prediction': int(prediction) if not np.isnan(prediction) else None} for x, y, prediction in zip(X.flatten().tolist(), y.tolist(), predictions)]
+
+    return jsonify(chart_data=chart_data)
+
+@app.route("/l2")
+def ridge_reg():
+    data = load_data('regmodels/l2/data_sample.csv')
+
+        # Load your features (X) and labels (y) from your data
+    X = np.array([d['x'] for d in data]).reshape(-1, 1)
+    y = np.array([d['y'] for d in data])
+
+    # Initialize and fit the logistic regression model
+    lr_model = RidgeRegressor()
+    lr_model.fit(X, y)
+
+    # Use all the data for testing (replace X_test with your actual test data)
+    X_test = X
+
+    # Predict using the logistic regression model
+    predictions = lr_model.predict(X_test)
+
+    # Prepare the data for the chart
+    chart_data = [{'x': int(x) if not np.isnan(x) else None, 'y': int(y) if not np.isnan(y) else None, 'prediction': int(prediction) if not np.isnan(prediction) else None} for x, y, prediction in zip(X.flatten().tolist(), y.tolist(), predictions)]
+
+    return jsonify(chart_data=chart_data)
+
+@app.route("/linear_regression")
+def linear_reg():
+    data = load_data('regmodels/linreg/data_sample.csv')
+    
+    # Load your features (X) and labels (y) from your data
+    X = np.array([d['x'] for d in data]).reshape(-1, 1)
+    y = np.array([d['y'] for d in data])
+
+    # Initialize and fit the logistic regression model
+    lr_model = LinearRegression()
+    lr_model.fit(X, y)
+
+    # Use all the data for testing (replace X_test with your actual test data)
+    X_test = X
+
+    # Predict using the logistic regression model
+    predictions = lr_model.predict(X_test)
+
+    # Prepare the data for the chart
+    chart_data = [{'x': int(x) if not np.isnan(x) else None, 'y': int(y) if not np.isnan(y) else None, 'prediction': int(prediction) if not np.isnan(prediction) else None} for x, y, prediction in zip(X.flatten().tolist(), y.tolist(), predictions)]
+
+    return jsonify(chart_data=chart_data)
+
+@app.route("/naive_bayes")
+def naive_bayes():
+    data = load_data('regmodels/naibe_bayes/data_sample.csv')
+
+    # Load your features (X) and labels (y) from your data
+    X = np.array([d['x'] for d in data]).reshape(-1, 1)
+    y = np.array([d['y'] for d in data])
+
+    # Initialize and fit the logistic regression model
+    lr_model = NaiveBayes()
+    lr_model.fit(X, y)
+
+    # Use all the data for testing (replace X_test with your actual test data)
+    X_test = X
+
+    # Predict using the logistic regression model
+    predictions = lr_model.predict(X_test)
+
+    # Prepare the data for the chart
+    chart_data = [{'x': int(x), 'y': int(y), 'prediction': int(prediction)} for x, y, prediction in zip(X.flatten().tolist(), y.tolist(), predictions)]
+
+    return jsonify(chart_data=chart_data)
+
+# @app.route("/random_forest")
+# def random_forest():
+#     data = load_data('regmodels/randomforest/data_sample.csv')
+
+#     # Load your features (X) and labels (y) from your data
+#     X = np.array([d['x'] for d in data]).reshape(-1, 1)
+#     y = np.array([d['y'] for d in data])
+
+#     # Initialize and fit the logistic regression model
+#     lr_model = RandomForest()
+#     lr_model.fit(X, y)
+
+#     # Use all the data for testing (replace X_test with your actual test data)
+#     X_test = X
+
+#     # Predict using the logistic regression model
+#     predictions = lr_model.predict(X_test)
+
+#     # Prepare the data for the chart
+#     chart_data = [{'x': int(x), 'y': int(y), 'prediction': int(prediction)} for x, y, prediction in zip(X.flatten().tolist(), y.tolist(), predictions)]
+
+#     return jsonify(chart_data=chart_data)
+
+@app.route("/xgb")
+def xgb():
+    data = load_data('regmodels/xgb/data_sample.csv')
+
+    # Load your features (X) and labels (y) from your data
+    X = np.array([d['x'] for d in data]).reshape(-1, 1)
+    y = np.array([d['y'] for d in data])
+
+    # Initialize and fit the logistic regression model
+    lr_model = SimpleGradientBoostingRegressor()
+    lr_model.fit(X, y)
+
+    # Use all the data for testing (replace X_test with your actual test data)
+    X_test = X
+
+    # Predict using the logistic regression model
+    predictions = lr_model.predict(X_test)
+
+    # Prepare the data for the chart
+    chart_data = [{'x': int(x), 'y': int(y), 'prediction': int(prediction)} for x, y, prediction in zip(X.flatten().tolist(), y.tolist(), predictions)]
+
+    return jsonify(chart_data=chart_data)
+
 # Combine all visualizations into a single HTML file
 @app.route("/")
 def home():
+
     # Generate visualizations for all models
+
+    # Classification Models
     lr_chart = logistic_regression()
     svm_chart = svm_route()
     pca_chart = pca()
     multi_logist_chart = multilogist()
 
+    # Regression Models
+    dc_chart = decision_tree()
+    elnet_chart = elastic_netreg()
+    knn_chart = knn()
+    lasso_chart = lasso_reg()
+    ridge_chart = ridge_reg()
+    linear_chart = linear_reg()
+    naibay_chart = naive_bayes()
+    # randomforest_chart = random_forest()
+    xgb_chart = xgb()
+
+
     # Render the main HTML template with all visualizations
-    return render_template("main.html", lr_chart=lr_chart, svm_chart=svm_chart, pca_chart=pca_chart, multi_logist_chart=multi_logist_chart)
+    return render_template("main.html", lr_chart=lr_chart, svm_chart=svm_chart, pca_chart=pca_chart, multi_logist_chart=multi_logist_chart, dc_chart=dc_chart, elnet_chart=elnet_chart, knn_chart=knn_chart, lasso_chart=lasso_chart, ridge_chart=ridge_chart, linear_chart=linear_chart, naibay_chart=naibay_chart, xgb_chart=xgb_chart)
 
 if __name__ == '__main__':
     app.run(debug=True, port=5001)
