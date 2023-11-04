@@ -26,7 +26,6 @@ save_vocab(vocab, 'vocab.txt', tokenized_phrases)
 loaded_tokens = load_tokens('tokens.txt')
 loaded_vocab = load_vocab('vocab.txt')
 
-# Additional code for your specific task/model goes here
 # For demonstration, let's generate some random y_test and y_pred
 np.random.seed(0)
 y_test = np.random.randint(0, 2, 100)  # Assuming binary classification
