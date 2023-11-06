@@ -1,0 +1,3 @@
+I'm not doing well,negative
+I'm uncertain,negative
+I have to go,neutral

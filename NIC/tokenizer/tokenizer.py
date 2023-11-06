@@ -1,8 +1,8 @@
-from autocorrect import Speller
 import string
 import numpy as np
+import autocorrect
 
-spell = Speller()
+spell = autocorrect.Speller()
 
 # Define a mapping from labels to numerical values
 label_to_numeric = {"positive": 0, "negative": 1, "neutral": 2}
@@ -100,8 +100,8 @@ with open('input_data.txt', 'r') as file:
     print(lines)
 
 # Extract phrases and sentiments
-phrases = [line.strip().split(',')[0] for line in lines]
-sentiments = [line.strip().split(',')[1] for line in lines]
+phrases = [line.strip().split('||')[0] for line in lines]
+sentiments = [line.strip().split('||')[1] for line in lines]
 print(sentiments)
 
 def compute_qkv(embeddings):
@@ -127,6 +127,18 @@ class FeedForwardNetwork:
         self.weights2 = np.random.randn(hidden_dim, output_dim)
         self.bias2 = np.zeros((1, output_dim))
         self.a1 = None
+
+    # Add a method for training the network
+    def train(self, x, y, num_epochs, learning_rate):
+        for epoch in range(num_epochs):
+            total_loss = 0
+            for i in range(len(x)):
+                output = self.forward(x[i])
+                target = y[i]
+                loss = self.backward(x[i], output, target, learning_rate)
+                total_loss += loss
+            average_loss = total_loss / len(x)
+            print(f'Epoch [{epoch+1}/{num_epochs}], Loss: {average_loss:.4f}')
 
     def forward(self, x):
         z1 = np.dot(x, self.weights1) + self.bias1
@@ -185,7 +197,6 @@ tokens = tokenize_text(' '.join(preprocessed_phrases))
 # Build vocabulary with word values
 vocab = {token: index for token, index in zip(tokens, [i/10 for i in range(1, len(tokens)+1)])}
 
-
 num_epochs = 100
 learning_rate = 0.01
 
@@ -212,19 +223,6 @@ for epoch in range(num_epochs):
             loss = network.backward(numeric_input, output, target_encoded, learning_rate)
             print(f'Epoch [{epoch+1}/{num_epochs}], Token [{token}], Loss: {loss:.4f}')
 
-# # Create a reverse mapping from index to word
-# index_to_word = {index: word for word, index in vocab.items()}
-
-# # Convert tokens to indices using the vocabulary
-# input_seq = [vocab[token] for token in tokens]
-
-# # After training, you can use the network for prediction
-# predicted_word_probs = network.forward(input_seq)
-
-# # Assuming predicted_word_probs is the output probabilities from the network
-# predicted_word_index = np.argmax(predicted_word_probs)
-# predicted_word = index_to_word[predicted_word_index]
-
 # Now, you can perform the forward pass
 output = network.forward(numeric_input)
 
@@ -240,11 +238,75 @@ Q, K, V = compute_qkv(embeddings)
 # Apply self-attention
 output = self_attention(Q, K, V)
 
+# Save phrases with sentiments to a file
+def save_phrases_with_sentiments(phrases, sentiments, file_path):
+    with open(file_path, 'w') as file:
+        for phrase, sentiment in zip(phrases, sentiments):
+            file.write(f'{phrase},{sentiment}\n')
+
+# Load phrases with sentiments from a file
+def load_phrases_with_sentiments(file_path):
+    phrases = []
+    sentiments = []
+    with open(file_path, 'r') as file:
+        lines = file.readlines()
+        for line in lines:
+            parts = line.strip().split(',')
+            if len(parts) == 2:
+                phrase, sentiment = parts
+                phrases.append(phrase)
+                sentiments.append(sentiment)
+    return phrases, sentiments
+
+
+def predict_next_word(input_text, vocab, network):
+    # Tokenize and preprocess the input text
+    input_text = correct_spelling(input_text)
+    input_text = preprocess_text(input_text)
+    input_tokens = tokenize_text(input_text)
+
+    # Get the last token in the input
+    last_token = input_tokens[-1]
+
+    # If the last token is in the vocabulary, use it for prediction
+    if last_token in vocab:
+        input_index = vocab[last_token]
+        numeric_input = np.zeros((1, network.input_dim))
+        numeric_input[0, :] = input_index
+
+        # Forward pass through the network
+        output = network.forward(numeric_input)
+
+        # Apply softmax to the output to get probabilities
+        probabilities = softmax(output)
+
+        # Get the index of the most likely next word
+        predicted_index = np.argmax(probabilities)
+        
+        # Find the predicted word from the vocab
+        predicted_word = None
+        for word, index in vocab.items():
+            if index == predicted_index:
+                predicted_word = word
+
+        return predicted_word
+    else:
+        return "Word not found in vocabulary"
+
+
 # Save the tokenized phrases with two empty lines between them
 save_tokens(phrases, 'tokens.txt')
 
 # Save vocabulary with two double new lines after each phrase
 save_vocab(vocab, 'vocab.txt', tokenized_phrases)
+
+# Build the input data in a suitable format
+numeric_inputs = []
+for token, sentiment in zip(tokens, sentiments):
+    if token in vocab:
+        numeric_input = np.zeros((1, input_dim))
+        numeric_input[0, :] = vocab[token]
+        numeric_inputs.append(numeric_input)
 
 # Save Q, K, and V matrices
 with open('qkv.txt', 'a') as file:
@@ -259,8 +321,22 @@ loaded_tokens = load_tokens('tokens.txt')
 # Loading vocabulary
 loaded_vocab = load_vocab('vocab.txt')
 
+# Save phrases with sentiments
+save_phrases_with_sentiments(phrases, sentiments, 'phrases_with_sentiments.txt')
+
+# Load phrases with sentiments
+loaded_phrases, loaded_sentiments = load_phrases_with_sentiments('phrases_with_sentiments.txt')
+
+print("Loaded Phrases:", loaded_phrases)
+print("Loaded Sentiments:", loaded_sentiments)
+
 print("Tokens:", tokens)
 print("Vocabulary:", vocab)
 print("Indices:", indices)
 print("Loaded Tokens:", loaded_tokens)
 print("Loaded Vocabulary:", loaded_vocab)
+network.train(numeric_inputs, target, num_epochs, learning_rate)
+
+input_text = "I'm doing"
+predicted_word = predict_next_word(input_text, vocab, network)
+print("Predicted next word:", predicted_word)
