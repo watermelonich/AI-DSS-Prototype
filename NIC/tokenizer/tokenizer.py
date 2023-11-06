@@ -1,8 +1,8 @@
-from autocorrect import Speller
 import string
 import numpy as np
+import autocorrect
 
-spell = Speller()
+spell = autocorrect.Speller()
 
 # Define a mapping from labels to numerical values
 label_to_numeric = {"positive": 0, "negative": 1, "neutral": 2}
@@ -100,8 +100,8 @@ with open('input_data.txt', 'r') as file:
     print(lines)
 
 # Extract phrases and sentiments
-phrases = [line.strip().split(',')[0] for line in lines]
-sentiments = [line.strip().split(',')[1] for line in lines]
+phrases = [line.strip().split('||')[0] for line in lines]
+sentiments = [line.strip().split('||')[1] for line in lines]
 print(sentiments)
 
 def compute_qkv(embeddings):
@@ -258,6 +258,42 @@ def load_phrases_with_sentiments(file_path):
                 sentiments.append(sentiment)
     return phrases, sentiments
 
+
+def predict_next_word(input_text, vocab, network):
+    # Tokenize and preprocess the input text
+    input_text = correct_spelling(input_text)
+    input_text = preprocess_text(input_text)
+    input_tokens = tokenize_text(input_text)
+
+    # Get the last token in the input
+    last_token = input_tokens[-1]
+
+    # If the last token is in the vocabulary, use it for prediction
+    if last_token in vocab:
+        input_index = vocab[last_token]
+        numeric_input = np.zeros((1, network.input_dim))
+        numeric_input[0, :] = input_index
+
+        # Forward pass through the network
+        output = network.forward(numeric_input)
+
+        # Apply softmax to the output to get probabilities
+        probabilities = softmax(output)
+
+        # Get the index of the most likely next word
+        predicted_index = np.argmax(probabilities)
+        
+        # Find the predicted word from the vocab
+        predicted_word = None
+        for word, index in vocab.items():
+            if index == predicted_index:
+                predicted_word = word
+
+        return predicted_word
+    else:
+        return "Word not found in vocabulary"
+
+
 # Save the tokenized phrases with two empty lines between them
 save_tokens(phrases, 'tokens.txt')
 
@@ -300,3 +336,7 @@ print("Indices:", indices)
 print("Loaded Tokens:", loaded_tokens)
 print("Loaded Vocabulary:", loaded_vocab)
 network.train(numeric_inputs, target, num_epochs, learning_rate)
+
+input_text = "I'm doing"
+predicted_word = predict_next_word(input_text, vocab, network)
+print("Predicted next word:", predicted_word)

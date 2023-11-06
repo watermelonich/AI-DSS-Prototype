@@ -1,4 +1,3 @@
-I'm getting overworked it is stressing.,negative
-They don't like me.,negative
-I like to sleep.,positive
-I don't know.,neutral
+I'm not doing well||negative
+I'm uncertain||negative
+I have to go||neutral
