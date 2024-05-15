@@ -1,0 +1,3 @@
+[console_scripts]
+xcc = xcc.commands:main
+

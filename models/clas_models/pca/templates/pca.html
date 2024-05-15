@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Principle Component Analysis</title>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+</head>
+<body>
+    <div id="scatter-plot"></div>
+    
+    <script>
+        // Function to update the chart with fetched data
+        async function updateChart() {
+            const response = await fetch('/pca');
+            const data = await response.json();
+            
+            // Your PCA results (e.g., eigenvectors and explained variance ratios)
+            const eigenvectors = data.eigenvectors; // Replace with your actual data
+            const explainedVariance = data.explained_variance; // Replace with your actual data
+            
+            // Biplot creation logic
+            var trace = {
+                x: eigenvectors[0], // Use the first eigenvector as x coordinates
+                y: eigenvectors[1], // Use the second eigenvector as y coordinates
+                mode: 'markers',
+                type: 'scatter',
+                name: 'Data Points'
+            };
+
+            // Add arrows for feature vectors (scaled eigenvectors)
+            for (var i = 0; i < eigenvectors[0].length; i++) {
+                trace.x.push(0, eigenvectors[0][i] * Math.sqrt(explainedVariance[i]));
+                trace.y.push(0, eigenvectors[1][i] * Math.sqrt(explainedVariance[i]));
+            }
+            
+            var layout = {
+                title: 'PCA Biplot',
+                xaxis: {title: 'PC1'},
+                yaxis: {title: 'PC2'}
+            };
+            
+            Plotly.newPlot('scatter-plot', [trace], layout);
+        }
+
+        // Call the updateChart function to initialize the chart
+        updateChart();
+    </script>
+</body>
+</html>

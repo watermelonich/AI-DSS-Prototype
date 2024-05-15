@@ -1,0 +1,37 @@
+body {
+    font-family: sans-serif;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.navbar {
+    background-color: rgb(242, 242, 242);
+}
+
+.db {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 30px;
+    gap: 20px;
+    padding: 20px;
+}
+
+.card {
+    margin-right: 50px; 
+    margin-bottom: 20px;
+}
+
+#cardOptions {
+    display: none;
+}
+
+/* Example CSS for highlighting */
+.highlighted {
+    background-color: yellow; /* Change to your preferred highlight color */
+    border: 2px solid #ffcc00; /* Add a border to highlighted cards */
+}

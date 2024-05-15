@@ -1,0 +1,111 @@
+// XIR grammar
+program: include* circuit
+circuit: (script_options | constants | declaration | gate_def | obs_def | application_stmt)*
+
+// includes
+include: "use" (path | ANGLE_L path ANGLE_R) ";"
+path: /[-.:_a-zA-Z0-9\/]+/
+
+// script options and constants
+script_options: _OPTIONS ":" (option ";")+ _END ";"
+constants: _CONSTANTS ":" (option ";")+ _END ";"
+option: name ":" val
+
+// declarations
+?declaration: (gate_decl | obs_decl | func_decl | out_decl)
+
+gate_decl: _GATE name [params_list] wires_or_arbirary ";"
+obs_decl: _OP name [params_list] wires_or_arbirary ";"
+out_decl: _OUT name [params_list] wires_or_arbirary ";"
+func_decl: _FUNC name [params_list] ";"
+
+
+
+// gates and application statements
+gate_def: _GATE name [params_list] [wires] ":" application_stmt+ _END ";"
+application_stmt: (INVERSE | (CTRL wires))* name params? "|" wires ";"
+
+// observables
+obs_def: _OP name [params_list] [wires] ":" obs_stmt_list _END ";"
+obs_stmt_list: obs_stmt+
+obs_stmt: expr "," obs_group ";"
+obs_group: obs_factor ("@" obs_factor)*
+obs_factor: obs [params] wires
+?obs: name
+
+// wires and parameters
+?wires_or_arbirary: (wires | arbitrary)
+?wires: "[" wire_list "]"
+?arbitrary: "[" ARBITRARY_NUM_WIRES "]"
+wire_list : (wire | range_) ("," (wire | range_))*
+?wire : uint | name
+
+?params: params_dict | params_list
+params_list: "(" val ("," val)* ")"
+params_dict: "(" option ("," option)* ")"
+
+// atomic values
+?val  : bool_ | expr | array
+array : "[" (val ("," val)*)? "]"
+
+float_ : SIGNED_FLOAT
+int_ : SIGNED_INT
+uint : INT
+imag_ : (float_ | int_) "j"
+
+name: CNAME
+bool_: TRUE_ | FALSE_
+range_: INT ".." INT
+
+// mathematics
+?expr: prod_expr
+     | expr "+" prod_expr -> add
+     | expr "-" prod_expr -> sub
+
+?prod_expr: atom
+         | prod_expr "*" atom -> prod
+         | prod_expr "/" atom -> div
+
+?atom: int_
+     | float_
+     | imag_
+     | name -> var
+     | "-" (name | "(" expr ")" | name "(" expr ")") -> neg
+     | "(" expr ")"
+     | name "(" expr ")" -> math_op
+     | PI
+
+// reserved keywords
+PI: "pi"
+
+_OPTIONS: "options"
+_CONSTANTS: "constants"
+_GATE: "gate"
+_FUNC: "func"
+_OP: "obs"
+_OUT: "out"
+INVERSE: "inv"
+CTRL: "ctrl"
+ARBITRARY_NUM_WIRES: "..."
+
+_END: "end"
+
+TRUE_: "true"
+FALSE_: "false"
+
+// symbols
+ANGLE_L: "<"
+ANGLE_R: ">"
+
+// std imports from common.lark
+%import common.ESCAPED_STRING
+%import common.SIGNED_INT
+%import common.INT
+%import common.SIGNED_FLOAT
+%import common.CPP_COMMENT
+%import common.CNAME
+%import common.WS
+
+// ignore whitespace and comments
+%ignore WS
+%ignore CPP_COMMENT

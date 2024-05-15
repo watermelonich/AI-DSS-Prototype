@@ -1,0 +1,12 @@
+i: 0.10
+love: 0.20
+this: 0.50
+product: 0.40
+movie: 0.60
+was: 0.70
+terrible: 0.80
+the: 0.90
+weather: 1.00
+is: 1.10
+nice: 1.20
+today: 1.30
