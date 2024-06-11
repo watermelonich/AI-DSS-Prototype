@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Decision Tree Analysis</title>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <link rel="icon" href="data:;base64,iVBORw0KGgo=">
+</head>
+<body>
+    <div id="scatter-plot"></div>
+    
+    <script>
+    async function updateChart() {
+        const response = await fetch('/decision_tree');
+        const data = await response.json();
+
+        var traceScatter = {
+            x: data.chart_data.map(d => d.x),
+            y: data.chart_data.map(d => d.y),
+            mode: 'markers',
+            type: 'scatter',
+            name: 'Data Points'
+        };
+
+        var traceTree = {
+            x: data.chart_data.map(d => d.x),
+            y: data.chart_data.map(d => d.prediction),
+            mode: 'lines',
+            type: 'scatter',
+            name: 'Decision Tree Analysis'
+        };
+
+        var layout = {
+            title: 'Decision Tree Analysis',
+            xaxis: {title: 'X'},
+            yaxis: {title: 'Y'}
+        };
+
+        Plotly.newPlot('scatter-plot', [traceScatter, traceTree], layout);
+    }
+
+    updateChart();
+
+    </script>
+</body>
+</html>

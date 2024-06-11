@@ -9,3 +9,5 @@
 ./package.json
 ./src
 ./testing
+qiskit_env/
+testvenv/

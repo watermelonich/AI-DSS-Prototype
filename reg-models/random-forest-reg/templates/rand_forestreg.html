@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Random Forest Analysis</title>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+</head>
+<body>
+    <div id="scatter-plot"></div>
+    
+    <script>
+    async function updateChart() {
+        const response = await fetch('/random_forest');
+        const data = await response.json();
+
+        var traceScatter = {
+            x: data.chart_data.map(d => d.x),
+            y: data.chart_data.map(d => d.y),
+            mode: 'lines+markers',  // Use 'lines+markers' for both lines and markers
+            type: 'scatter',
+            name: 'Data Points'
+        };
+
+        var traceRegressor = {
+            x: data.chart_data.map(d => d.x),
+            y: data.chart_data.map(d => d.prediction),
+            mode: 'lines',  // Use 'lines' to only show lines without markers
+            type: 'scatter',
+            name: 'Random Forest Analysis'
+        };
+
+        var layout = {
+            title: 'Random Forest Analysis',
+            xaxis: {title: 'X'},
+            yaxis: {title: 'Y'}
+        };
+
+        Plotly.newPlot('scatter-plot', [traceScatter, traceRegressor], layout);
+    }
+
+    updateChart();
+
+    </script>
+</body>
+</html>

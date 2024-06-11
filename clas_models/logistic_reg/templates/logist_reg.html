@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Logistic Regression</title>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+</head>
+<body>
+    <div id="scatter-plot"></div>
+    
+    <script>
+        // Function to update the chart with fetched data
+        async function updateChart() {
+            const response = await fetch('/logistic_regression');
+            const data = await response.json();
+            
+            var trace = {
+                x: data.chart_data.map(d => d.x),
+                y: data.chart_data.map(d => d.y),
+                mode: 'markers',
+                type: 'scatter',
+                name: 'Data Points'
+            };
+            
+            var layout = {
+                title: 'Logistic Regression Scatter Plot',
+                xaxis: {title: 'X'},
+                yaxis: {title: 'Y'}
+            };
+            
+            Plotly.newPlot('scatter-plot', [trace], layout);
+        }
+
+        // Call the updateChart function to initialize the chart
+        updateChart();
+    </script>
+</body>
+</html>

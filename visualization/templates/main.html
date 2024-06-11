@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Visualizations</title>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+    <h1>Resulted Visualizations</h1>
+
+<div class="container">
+
+<!-- Logistic Regression Visualization -->
+
+<div id="box">
+    <div id="logistic-reg-chart">
+        <div id="logistic-reg-scatter-plot"></div>
+    </div>
+
+    <script>
+        async function updateLogisticRegressionChart() {
+            const response = await fetch('/logistic_regression');
+            const data = await response.json();
+
+            var traceScatter = {
+                x: data.chart_data.map(d => d.x),
+                y: data.chart_data.map(d => d.y),
+                mode: 'markers',
+                type: 'scatter',
+                name: 'Data Points'
+            };
+
+            var traceLine = {
+                x: data.chart_data.map(d => d.x),
+                y: data.chart_data.map(d => d.prediction),
+                mode: 'lines',
+                type: 'scatter',
+                name: 'Logistic Regression Analysis'
+            };
+
+            var layout = {
+                title: 'Logistic Regression Analysis',
+                xaxis: {title: 'X'},
+                yaxis: {title: 'Y'}
+            };
+
+            Plotly.newPlot('logistic-reg-scatter-plot', [traceScatter, traceLine], layout);
+        }
+
+        updateLogisticRegressionChart();
+    </script>
+</div>
+
+
+    <!-- SVM Visualization -->
+    <div id="box">
+    <div id="svm-chart">
+        <div id="svm-scatter-plot"></div>
+    </div>
+
+    <script>
+        async function updateSVMChart() {
+            const response = await fetch('/svm');
+            const data = await response.json();
+
+            var traceScatter = {
+                x: data.chart_data.map(d => d.x),
+                y: data.chart_data.map(d => d.y),
+                mode: 'markers',
+                type: 'scatter',
+                name: 'Data Points'
+            };
+
+            var traceLine = {
+                x: data.chart_data.map(d => d.x),
+                y: data.chart_data.map(d => d.prediction),
+                mode: 'lines',
+                type: 'scatter',
+                name: 'SVM Analysis'
+            };
+
+            var layout = {
+                title: 'SVM Analysis',
+                xaxis: {title: 'X'},
+                yaxis: {title: 'Y'}
+            };
+
+            Plotly.newPlot('svm-scatter-plot', [traceScatter, traceLine], layout);
+        }
+
+        updateSVMChart();
+    </script>
+    </div>
+
+    <!-- PCA Visualization -->
+
+    <div id="box">
+    <div id="pca-chart">
+        <div id="pca-scatter-plot"></div>
+    </div>
+
+    <script>
+    // Function to update the chart with fetched data
+    async function updateChart() {
+        const response = await fetch('/pca');
+        const data = await response.json();
+
+        // Extract eigenvectors and explained_variance
+        const eigenvectors = data.eigenvectors;
+        const explainedVariance = data.explained_variance;
+
+        // Biplot creation logic
+        var trace = {
+            x: [],
+            y: [],
+            mode: 'markers',
+            type: 'scatter',
+            name: 'Data Points'
+        };
+
+        // Add arrows for feature vectors (scaled eigenvectors)
+        for (var i = 0; i < eigenvectors[0].length; i++) {
+            trace.x.push(0, eigenvectors[0][i] * Math.sqrt(explainedVariance[i]));
+            trace.y.push(0, eigenvectors[1][i] * Math.sqrt(explainedVariance[i]));
+        }
+
+        var layout = {
+            title: 'PCA Biplot',
+            xaxis: {title: 'PC1'},
+            yaxis: {title: 'PC2'}
+        };
+
+        Plotly.newPlot('pca-scatter-plot', [trace], layout);
+    }
+
+    // Call the updateChart function to initialize the chart
+    updateChart();
+
+    </script>
+    </div>
+
+
+    <!-- Multi Logistic Regression Visualization -->
+    <div id="box">
+    <div id="multilogistic-chart">
+        <div id="multilogistic-scatter-plot"></div>
+    </div>
+    <script>
+        async function updateMultiLogisticChart() {
+            const response = await fetch('/multilogistic_regression');
+            const data = await response.json();
+
+            var traceScatter = {
+                x: data.chart_data.map(d => d.x),
+                y: data.chart_data.map(d => d.y),
+                mode: 'markers',
+                type: 'scatter',
+                name: 'Data Points'
+            };
+
+            var traceLine = {
+                x: data.chart_data.map(d => d.x),
+                y: data.chart_data.map(d => d.prediction),
+                mode: 'lines',
+                type: 'scatter',
+                name: 'Multi-Logistic Regression Line'
+            };
+
+            var layout = {
+                title: 'Linear Regression',
+                xaxis: {title: 'X'},
+                yaxis: {title: 'Y'}
+            };
+
+            Plotly.newPlot('multilogistic-scatter-plot', [traceScatter, traceLine], layout);
+        }
+
+        updateMultiLogisticChart();
+    </script>
+    </div>
+
+    <!-- Regression Models Data Visualization -->
+
+    <!-- Decision Tree Regression Visualization -->
+    <div id="box">
+        <div id="decisiontree-chart">
+            <div id="decisiontree-scatter-plot"></div>
+        </div>
+        <script>
+                async function updateChart() {
+        const response = await fetch('/decision_tree');
+        const data = await response.json();
+
+        var traceScatter = {
+            x: data.chart_data.map(d => d.x),
+            y: data.chart_data.map(d => d.y),
+            mode: 'markers',
+            type: 'scatter',
+            name: 'Data Points'
+        };
+
+        var traceTree = {
+            x: data.chart_data.map(d => d.x),
+            y: data.chart_data.map(d => d.prediction),
+            mode: 'lines',
+            type: 'scatter',
+            name: 'Decision Tree Analysis'
+        };
+
+        var layout = {
+            title: 'Decision Tree Analysis',
+            xaxis: {title: 'X'},
+            yaxis: {title: 'Y'}
+        };
+
+        Plotly.newPlot('decisiontree-scatter-plot', [traceScatter, traceTree], layout);
+    }
+
+    updateChart();
+        </script>
+    </div>
+
+    <!-- Elastic Net Regression Visualization -->
+    <div id="box">
+        <div id="elasticnet-chart">
+            <div id="elasticnet-scatter-plot"></div>
+        </div>
+        <script>
+                async function updateChart() {
+        const response = await fetch('/elastic_netreg');
+        const data = await response.json();
+
+        var validData = data.chart_data.filter(d => !isNaN(d.x) && !isNaN(d.y) && !isNaN(d.prediction));
+
+        var traceScatter = {
+            x: validData.map(d => d.x),
+            y: validData.map(d => d.y),
+            mode: 'lines+markers',
+            type: 'scatter',
+            name: 'Data Points'
+        };
+
+        var traceRegressor = {
+            x: validData.map(d => d.x),
+            y: validData.map(d => d.prediction),
+            mode: 'lines',
+            type: 'scatter',
+            name: 'Elastic Net Regressor Analysis'
+        };
+
+        var layout = {
+            title: 'Elastic Net Regressor Analysis',
+            xaxis: {title: 'X'},
+            yaxis: {title: 'Y'}
+        };
+
+        Plotly.newPlot('elasticnet-scatter-plot', [traceScatter, traceRegressor], layout);
+    }
+
+    updateChart();
+
+        </script>
+    </div>
+
+    <!-- KNN Visualization -->
+    <div id="box">
+        <div id="knn-chart">
+            <div id="knn-scatter-plot"></div>
+        </div>
+        <script>
+                async function updateChart() {
+        const response = await fetch('/knn');
+        const data = await response.json();
+
+        var validData = data.chart_data.filter(d => !isNaN(d.x) && !isNaN(d.y) && !isNaN(d.prediction));
+
+        var traceScatter = {
+            x: validData.map(d => d.x),
+            y: validData.map(d => d.y),
+            mode: 'lines+markers',
+            type: 'scatter',
+            name: 'Data Points'
+        };
+
+        var traceRegressor = {
+            x: validData.map(d => d.x),
+            y: validData.map(d => d.prediction),
+            mode: 'lines',
+            type: 'scatter',
+            name: 'KNN Analysis'
+        };
+
+        var layout = {
+            title: 'KNN Analysis',
+            xaxis: {title: 'X'},
+            yaxis: {title: 'Y'}
+        };
+
+        Plotly.newPlot('knn-scatter-plot', [traceScatter, traceRegressor], layout);
+    }
+
+    updateChart();
+        </script>
+    </div>
+
+    <!-- L-Regularation Data Visualization -->
+    <!-- Lasso, L1 Visualization -->
+
+    <div id="box">
+        <div id="lasso-chart">
+            <div id="lasso-scatter-plot"></div>
+        </div>
+        <script>
+                async function updateChart() {
+        const response = await fetch('/l1');
+        const data = await response.json();
+
+        var traceScatter = {
+            x: data.chart_data.map(d => d.x),
+            y: data.chart_data.map(d => d.y),
+            mode: 'lines+markers',  // Use 'lines+markers' for both lines and markers
+            type: 'scatter',
+            name: 'Data Points'
+        };
+
+        var traceRegressor = {
+            x: data.chart_data.map(d => d.x),
+            y: data.chart_data.map(d => d.prediction),
+            mode: 'lines',  // Use 'lines' to only show lines without markers
+            type: 'scatter',
+            name: 'Lasso Regressor Analysis'
+        };
+
+        var layout = {
+            title: 'Lasso Regressor Analysis',
+            xaxis: {title: 'X'},
+            yaxis: {title: 'Y'}
+        };
+
+        Plotly.newPlot('lasso-scatter-plot', [traceScatter, traceRegressor], layout);
+    }
+
+    updateChart();
+        </script>
+    </div>
+
+    <!-- Ridge, L2 Visualization -->
+
+    <div id="box">
+        <div id="ridge-chart">
+            <div id="ridge-scatter-plot"></div>
+        </div>
+        <script>
+                async function updateChart() {
+        const response = await fetch('/l2');
+        const data = await response.json();
+
+        var traceScatter = {
+            x: data.chart_data.map(d => d.x),
+            y: data.chart_data.map(d => d.y),
+            mode: 'lines+markers',  // Use 'lines+markers' for both lines and markers
+            type: 'scatter',
+            name: 'Data Points'
+        };
+
+        var traceRegressor = {
+            x: data.chart_data.map(d => d.x),
+            y: data.chart_data.map(d => d.prediction),
+            mode: 'lines',  // Use 'lines' to only show lines without markers
+            type: 'scatter',
+            name: 'Ridge Regressor Analysis'
+        };
+
+        var layout = {
+            title: 'Ridge Regressor Analysis',
+            xaxis: {title: 'X'},
+            yaxis: {title: 'Y'}
+        };
+
+        Plotly.newPlot('ridge-scatter-plot', [traceScatter, traceRegressor], layout);
+    }
+
+    updateChart();
+        </script>
+    </div>
+
+    <!-- Linear Regression Visualization -->
+
+    <div id="box">
+        <div id="linreg-chart">
+            <div id="linreg-scatter-plot"></div>
+        </div>
+        <script>    async function updateChart() {
+            const response = await fetch('/linear_regression');
+            const data = await response.json();
+    
+            var traceScatter = {
+                x: data.chart_data.map(d => d.x),
+                y: data.chart_data.map(d => d.y),
+                mode: 'lines+markers',  // Use 'lines+markers' for both lines and markers
+                type: 'scatter',
+                name: 'Data Points'
+            };
+    
+            var traceRegressor = {
+                x: data.chart_data.map(d => d.x),
+                y: data.chart_data.map(d => d.prediction),
+                mode: 'lines',  // Use 'lines' to only show lines without markers
+                type: 'scatter',
+                name: 'Linear Regression Analysis'
+            };
+    
+            var layout = {
+                title: 'Linear Regression Analysis',
+                xaxis: {title: 'X'},
+                yaxis: {title: 'Y'}
+            };
+    
+            Plotly.newPlot('linreg-scatter-plot', [traceScatter, traceRegressor], layout);
+        }
+    
+        updateChart();</script>
+    </div>
+
+    <!-- Naive Bayes Visualization -->
+
+    <div id="box">
+        <div id="naibay-chart">
+            <div id="naibay-scatter-plot"></div>
+        </div>
+        <script>
+        async function updateChart() {
+        const response = await fetch('/naive_bayes');
+        const data = await response.json();
+
+        var traceScatter = {
+            x: data.chart_data.map(d => d.x),
+            y: data.chart_data.map(d => d.y),
+            mode: 'lines+markers',  // Use 'lines+markers' for both lines and markers
+            type: 'scatter',
+            name: 'Data Points'
+        };
+
+        var tracePredicted = {
+            x: data.chart_data.map(d => d.x),
+            y: data.chart_data.map(d => d.prediction),
+            mode: 'lines',  // Use 'lines' to only show lines without markers
+            type: 'scatter',
+            name: 'Naive Bayes Prediction'
+        };
+
+        var layout = {
+            title: 'Naive Bayes Analysis',
+            xaxis: {title: 'X'},
+            yaxis: {title: 'Y'}
+        };
+
+        Plotly.newPlot('naibay-scatter-plot', [traceScatter, tracePredicted], layout);
+    }
+
+    updateChart();
+        </script>
+    </div>
+
+    <!-- Random Forest Visualization -->
+
+    <div id="box">
+        <div id="randforest-chart">
+            <div id="randomforest-scatter-plot"></div>
+        </div>
+        <script>
+                async function updateChart() {
+        const response = await fetch('/random_forest');
+        const data = await response.json();
+
+        var traceScatter = {
+            x: data.chart_data.map(d => d.x),
+            y: data.chart_data.map(d => d.y),
+            mode: 'lines+markers',  // Use 'lines+markers' for both lines and markers
+            type: 'scatter',
+            name: 'Data Points'
+        };
+
+        var traceRegressor = {
+            x: data.chart_data.map(d => d.x),
+            y: data.chart_data.map(d => d.prediction),
+            mode: 'lines',  // Use 'lines' to only show lines without markers
+            type: 'scatter',
+            name: 'Random Forest Analysis'
+        };
+
+        var layout = {
+            title: 'Random Forest Analysis',
+            xaxis: {title: 'X'},
+            yaxis: {title: 'Y'}
+        };
+
+        Plotly.newPlot('randomforest-scatter-plot', [traceScatter, traceRegressor], layout);
+    }
+
+    updateChart();
+
+        </script>
+    </div>
+
+    <!-- XGBoost Visualization -->
+
+    <div id="box">
+        <div id="knn-chart">
+            <div id="knn-scatter-plot"></div>
+        </div>
+        <script>
+                async function updateChart() {
+        const response = await fetch('/xgb');
+        const data = await response.json();
+
+        var traceScatter = {
+            x: data.chart_data.map(d => d.x),
+            y: data.chart_data.map(d => d.y),
+            mode: 'lines+markers',  // Use 'lines+markers' for both lines and markers
+            type: 'scatter',
+            name: 'Data Points'
+        };
+
+        var traceRegressor = {
+            x: data.chart_data.map(d => d.x),
+            y: data.chart_data.map(d => d.prediction),
+            mode: 'lines',  // Use 'lines' to only show lines without markers
+            type: 'scatter',
+            name: 'XGBoost Analysis'
+        };
+
+        var layout = {
+            title: 'XGBoost Analysis',
+            xaxis: {title: 'X'},
+            yaxis: {title: 'Y'}
+        };
+
+        Plotly.newPlot('scatter-plot', [traceScatter, traceRegressor], layout);
+    }
+
+    updateChart();
+        </script>
+    </div>
+
+    <div id="box">
+        <div id="xgb-chart">
+            <div id="xgb-scatter-plot"></div>
+        </div>
+        <script>
+            async function updateChart() {
+                const response = await fetch('/xgb');
+                const data = await response.json();
+        
+                var traceScatter = {
+                    x: data.chart_data.map(d => d.x),
+                    y: data.chart_data.map(d => d.y),
+                    mode: 'lines+markers',  // Use 'lines+markers' for both lines and markers
+                    type: 'scatter',
+                    name: 'Data Points'
+                };
+        
+                var traceRegressor = {
+                    x: data.chart_data.map(d => d.x),
+                    y: data.chart_data.map(d => d.prediction),
+                    mode: 'lines',  // Use 'lines' to only show lines without markers
+                    type: 'scatter',
+                    name: 'XGBoost Analysis'
+                };
+        
+                var layout = {
+                    title: 'XGBoost Analysis',
+                    xaxis: {title: 'X'},
+                    yaxis: {title: 'Y'}
+                };
+        
+                Plotly.newPlot('xgb-scatter-plot', [traceScatter, traceRegressor], layout);
+            }
+        
+            updateChart();
+        
+            </script>
+    </div>
+
+</div>
+
+
+</body>
+</html>

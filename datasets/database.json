@@ -1,0 +1,11 @@
+[
+  {
+    "title": "Card title",
+    "identifier": "ID12345678",
+    "files": [
+      "An item",
+      "A second item",
+      "A third item"
+    ]
+  }
+]

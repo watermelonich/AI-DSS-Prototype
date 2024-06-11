@@ -1,0 +1,78 @@
+
+Reached leaf node at depth 4. Predicted value: 1597
+
+
+Reached leaf node at depth 4. Predicted value: 1456
+
+At depth 3, splitting on feature 0 with threshold 1.
+
+
+Reached leaf node at depth 4. Predicted value: 896
+
+
+Reached leaf node at depth 4. Predicted value: 453
+
+At depth 3, splitting on feature 0 with threshold 5.
+
+At depth 2, splitting on feature 0 with threshold 3.
+
+
+Reached leaf node at depth 4. Predicted value: 1235
+
+
+Reached leaf node at depth 4. Predicted value: 1089
+
+At depth 3, splitting on feature 0 with threshold 9.
+
+
+Reached leaf node at depth 4. Predicted value: 1678
+
+
+Reached leaf node at depth 4. Predicted value: 2078
+
+At depth 3, splitting on feature 0 with threshold 13.
+
+At depth 2, splitting on feature 0 with threshold 11.
+
+At depth 1, splitting on feature 0 with threshold 7.
+
+
+Reached leaf node at depth 4. Predicted value: 2367
+
+
+Reached leaf node at depth 4. Predicted value: 2456
+
+At depth 3, splitting on feature 0 with threshold 16.
+
+
+Reached leaf node at depth 4. Predicted value: 2680
+
+
+Reached leaf node at depth 4. Predicted value: 2856
+
+At depth 3, splitting on feature 0 with threshold 20.
+
+At depth 2, splitting on feature 0 with threshold 18.
+
+
+Reached leaf node at depth 4. Predicted value: 3098
+
+
+Reached leaf node at depth 4. Predicted value: 3256
+
+At depth 3, splitting on feature 0 with threshold 24.
+
+
+Reached leaf node at depth 4. Predicted value: 3478
+
+
+Reached leaf node at depth 4. Predicted value: 3654
+
+At depth 3, splitting on feature 0 with threshold 28.
+
+At depth 2, splitting on feature 0 with threshold 26.
+
+At depth 1, splitting on feature 0 with threshold 22.
+
+At depth 0, splitting on feature 0 with threshold 15.
+

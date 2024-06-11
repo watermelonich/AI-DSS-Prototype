@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Elastic Net Regressor Analysis</title>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+</head>
+<body>
+    <div id="scatter-plot"></div>
+    
+    <script>
+    async function updateChart() {
+        const response = await fetch('/elastic_netregressor');
+        const data = await response.json();
+
+        var validData = data.chart_data.filter(d => !isNaN(d.x) && !isNaN(d.y) && !isNaN(d.prediction));
+
+        var traceScatter = {
+            x: validData.map(d => d.x),
+            y: validData.map(d => d.y),
+            mode: 'lines+markers',
+            type: 'scatter',
+            name: 'Data Points'
+        };
+
+        var traceRegressor = {
+            x: validData.map(d => d.x),
+            y: validData.map(d => d.prediction),
+            mode: 'lines',
+            type: 'scatter',
+            name: 'Elastic Net Regressor Analysis'
+        };
+
+        var layout = {
+            title: 'Elastic Net Regressor Analysis',
+            xaxis: {title: 'X'},
+            yaxis: {title: 'Y'}
+        };
+
+        Plotly.newPlot('scatter-plot', [traceScatter, traceRegressor], layout);
+    }
+
+    updateChart();
+
+    </script>
+</body>
+</html>
