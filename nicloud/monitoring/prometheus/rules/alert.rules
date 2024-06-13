@@ -1,0 +1,24 @@
+# monitoring/prometheus/rules/alert.rules
+
+# Prometheus alerting rules
+
+groups:
+- name: example
+  rules:
+  - alert: HighCpuUsage
+    expr: process_cpu_seconds_total > 80
+    for: 2m
+    labels:
+      severity: warning
+    annotations:
+      summary: "High CPU usage detected"
+      description: "CPU usage is above 80% for more than 2 minutes."
+      
+  - alert: InstanceDown
+    expr: up == 0
+    for: 5m
+    labels:
+      severity: critical
+    annotations:
+      summary: "Instance down"
+      description: "An instance has been down for more than 5 minutes."

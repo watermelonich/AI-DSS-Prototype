@@ -1,0 +1,39 @@
+# File: ci_cd/gitlab/.gitlab-ci.yml
+
+stages:
+  - build
+  - test
+  - deploy
+
+variables:
+  VIRTUAL_ENV: $CI_PROJECT_DIR/venv
+  PATH: $VIRTUAL_ENV/bin:$PATH
+
+before_script:
+  - python -m venv venv
+  - source venv/bin/activate
+  - pip install -r requirements.txt
+
+build:
+  stage: build
+  script:
+    - echo "Building the project..."
+
+test:
+  stage: test
+  script:
+    - pytest
+
+deploy:
+  stage: deploy
+  script:
+    - curl -LO https://releases.hashicorp.com/terraform/1.0.0/terraform_1.0.0_linux_amd64.zip
+    - unzip terraform_1.0.0_linux_amd64.zip
+    - sudo mv terraform /usr/local/bin/
+    - terraform init
+    - terraform apply -var-file="main_tf/envs/dev.tfvars" -auto-approve
+
+after_script:
+  - if [ "$CI_JOB_STATUS" == "failed" ]; then
+      curl -X POST -H 'Content-type: application/json' --data '{"text":"Build or deploy failed"}' https://hooks.slack.com/services/T00000000/B00000000/XXXXXXXXXXXXXXXXXXXXXXXX;
+    fi

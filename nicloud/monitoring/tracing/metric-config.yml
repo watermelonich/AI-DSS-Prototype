@@ -1,0 +1,36 @@
+# Global settings for metrics collection
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+
+# Prometheus settings
+prometheus:
+  scrape_configs:
+    - job_name: 'my-service'
+      scrape_interval: 15s
+      static_configs:
+        - targets: ['localhost:9090']
+
+# Metrics collection settings
+metrics:
+  request:
+    enabled: true
+    histogram:
+      buckets: [0.1, 0.3, 1.2, 5.0]
+  error:
+    enabled: true
+    counter:
+      name: "error_count"
+      help: "Total number of errors"
+  custom:
+    enabled: true
+    gauges:
+      - name: "custom_metric"
+        help: "A custom gauge metric"
+        # labels: ["label1", "label2"]
+
+# Exporter settings
+exporter:
+  prometheus:
+    enabled: true
+    endpoint: "/metrics"

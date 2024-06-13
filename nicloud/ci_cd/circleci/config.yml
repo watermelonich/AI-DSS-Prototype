@@ -1,0 +1,58 @@
+# File: ci_cd/circleci/config.yml
+
+version: 2.1
+
+executors:
+  default:
+    docker:
+      - image: circleci/python:3.8
+    working_directory: ~/repo
+
+jobs:
+  build:
+    executor: default
+    steps:
+      - checkout
+      - run:
+          name: Install dependencies
+          command: |
+            python -m venv venv
+            . venv/bin/activate
+            pip install -r requirements.txt
+      - run:
+          name: Run tests
+          command: |
+            . venv/bin/activate
+            pytest
+
+  deploy:
+    executor: default
+    steps:
+      - checkout
+      - run:
+          name: Install Terraform
+          command: |
+            curl -LO https://releases.hashicorp.com/terraform/1.0.0/terraform_1.0.0_linux_amd64.zip
+            unzip terraform_1.0.0_linux_amd64.zip
+            sudo mv terraform /usr/local/bin/
+      - run:
+          name: Terraform Init
+          command: terraform init
+      - run:
+          name: Terraform Apply
+          command: terraform apply -var-file="main_tf/envs/dev.tfvars" -auto-approve
+
+workflows:
+  version: 2
+  build_and_deploy:
+    jobs:
+      - build
+      - deploy:
+          requires:
+            - build
+
+notify:
+  webhooks:
+    - url: https://hooks.slack.com/services/T00000000/B00000000/XXXXXXXXXXXXXXXXXXXXXXXX
+      on_success: always
+      on_failure: always

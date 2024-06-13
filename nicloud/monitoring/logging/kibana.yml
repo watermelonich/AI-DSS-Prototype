@@ -1,0 +1,9 @@
+# monitoring/logging/kibana.yml
+
+# Kibana configuration to connect to Elasticsearch
+
+server.port: 5601
+server.host: "0.0.0.0"
+elasticsearch.hosts: ["http://elasticsearch.local:9200"]
+kibana.index: ".kibana"
+logging.dest: stdout

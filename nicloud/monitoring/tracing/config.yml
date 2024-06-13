@@ -1,0 +1,10 @@
+# General configuration for tracing
+tracing:
+  service_name: "my-service"
+  sampler:
+    type: "const"
+    param: 1
+  reporter:
+    log_spans: true
+    local_agent:
+      host_port: "127.0.0.1:6831"

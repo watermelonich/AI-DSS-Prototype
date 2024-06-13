@@ -1,0 +1,13 @@
+# Jaeger-specific configuration
+jaeger:
+  collector_endpoint: "http://jaeger-collector:14268/api/traces"
+  agent:
+    host: "127.0.0.1"
+    port: 6831
+  sampler:
+    type: "const"
+    param: 1
+  reporter:
+    log_spans: true
+    flush_interval: 1
+    max_queue_size: 100

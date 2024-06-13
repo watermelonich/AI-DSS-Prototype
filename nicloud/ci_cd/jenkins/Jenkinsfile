@@ -1,0 +1,54 @@
+// File: ci_cd/jenkins/Jenkinsfile
+
+pipeline {
+    agent any
+
+    environment {
+        VENV = "${env.WORKSPACE}/venv"
+    }
+
+    stages {
+        stage('Checkout') {
+            steps {
+                git 'https://github.com/your-repo.git'
+            }
+        }
+
+        stage('Setup Python') {
+            steps {
+                sh '''
+                python -m venv $VENV
+                . $VENV/bin/activate
+                pip install -r requirements.txt
+                '''
+            }
+        }
+
+        stage('Test') {
+            steps {
+                sh '''
+                . $VENV/bin/activate
+                pytest
+                '''
+            }
+        }
+
+        stage('Deploy') {
+            steps {
+                sh '''
+                curl -LO https://releases.hashicorp.com/terraform/1.0.0/terraform_1.0.0_linux_amd64.zip
+                unzip terraform_1.0.0_linux_amd64.zip
+                sudo mv terraform /usr/local/bin/
+                terraform init
+                terraform apply -var-file="main_tf/envs/dev.tfvars" -auto-approve
+                '''
+            }
+        }
+    }
+
+    post {
+        failure {
+            slackSend (channel: '#your-channel', color: '#FF0000', message: "Build or deploy failed")
+        }
+    }
+}
