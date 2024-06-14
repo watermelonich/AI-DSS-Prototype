@@ -1182,7 +1182,7 @@ class SupplyChainPage(SidebarFrame):
 
         business_data_insights_frame = tk.LabelFrame(self.scrollable_frame, text="Business Data Insights", bg="white", padx=10, pady=10)
         business_data_insights_frame.pack(fill='both', expand=True, padx=10, pady=10)
-        self.supply_chain_business_figure_frame = tk.Frame(business_data_insights_frame, bg="white")
+        self.supply_chain_business_figure_frazme = tk.Frame(business_data_insights_frame, bg="white")
         self.supply_chain_business_figure_frame.pack(fill='both', expand=True, pady=10)
 
         # Add empty plots
