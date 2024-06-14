@@ -105,68 +105,46 @@ class UserSetupPage(tk.Frame):
         print(f"Role: {role}, User Info: {user_info}, Company Type: {company_type}, Sector: {sector}")
         self.controller.show_frame(f"{sector}Page")
 
+# class ScrollableFrame(tk.Frame):
+#     def __init__(self, parent, controller):
+#         super().__init__(parent, bg="white")
+#         self.controller = controller
+
+#         canvas = tk.Canvas(self, bg="white")
+#         scrollbar = Scrollbar(self, orient="vertical", command=canvas.yview)
+#         self.scrollable_frame = tk.Frame(canvas, bg="white")
+
+#         self.scrollable_frame.bind(
+#             "<Configure>",
+#             lambda e: canvas.configure(
+#                 scrollregion=canvas.bbox("all")
+#             )
+#         )
+
+#         canvas.create_window((0, 0), window=self.scrollable_frame, anchor="nw")
+#         canvas.configure(yscrollcommand=scrollbar.set)
+
+#         canvas.pack(side="left", fill="both", expand=True)
+#         scrollbar.pack(side="right", fill="y")
+
 class ScrollableFrame(tk.Frame):
-    def __init__(self, parent, controller):
-        super().__init__(parent, bg="white")
-        self.controller = controller
+    def __init__(self, parent, *args, **kwargs):
+        super().__init__(parent, *args, **kwargs)
 
-        canvas = tk.Canvas(self, bg="white")
-        scrollbar = Scrollbar(self, orient="vertical", command=canvas.yview)
-        self.scrollable_frame = tk.Frame(canvas, bg="white")
+        canvas = tk.Canvas(self, borderwidth=0, background="#ffffff")
+        self.scrollable_frame = tk.Frame(canvas, background="#ffffff")
+        vsb = ttk.Scrollbar(self, orient="vertical", command=canvas.yview)
+        canvas.configure(yscrollcommand=vsb.set)
 
-        self.scrollable_frame.bind(
-            "<Configure>",
-            lambda e: canvas.configure(
-                scrollregion=canvas.bbox("all")
-            )
-        )
-
-        canvas.create_window((0, 0), window=self.scrollable_frame, anchor="nw")
-        canvas.configure(yscrollcommand=scrollbar.set)
-
+        vsb.pack(side="right", fill="y")
         canvas.pack(side="left", fill="both", expand=True)
-        scrollbar.pack(side="right", fill="y")
+        canvas.create_window((0,0), window=self.scrollable_frame, anchor="nw",
+                             tags="self.scrollable_frame")
 
-class SidebarFrame(ScrollableFrame):
-    def __init__(self, parent, controller):
-        super().__init__(parent, controller)
-        self.create_sidebar()
+        self.scrollable_frame.bind("<Configure>", lambda event,
+                                   canvas=canvas: canvas.configure(scrollregion=canvas.bbox("all")))
 
-    def create_sidebar(self):
-        sidebar = tk.Frame(self.scrollable_frame, width=200, bg='#ECF1F6')
-        sidebar.pack(expand=False, fill='both', side='left', anchor='nw')
-
-        header_logo_img = tk.PhotoImage(file="../assets/header_logo.png")
-        header_logo_img = header_logo_img.subsample(2)
-        header_logo_label = tk.Label(sidebar, image=header_logo_img, bg='white')
-        header_logo_label.image = header_logo_img
-        header_logo_label.pack(side="top", pady=(0, 5))
-
-        label = tk.Label(sidebar, text="Categories", bg='#ECF1F6', font=('Helvetica', 16, 'bold'), fg="#91ABC9")
-        label.pack(pady=10)
-
-        buttons = [
-            ("Dashboard", lambda: self.controller.show_frame("DashboardPage")),
-            ("Reports", lambda: self.controller.show_frame("ReportsPage")),
-            ("Data Analysis Tools", lambda: self.controller.show_frame("DataAnalysisPage")),
-            ("Model Selection", lambda: self.controller.show_frame("ModelSelectionPage")),
-            ("Model Training", lambda: self.controller.show_frame("ModelTrainingPage")),
-            ("Model Evaluation", lambda: self.controller.show_frame("ModelEvaluationPage")),
-            ("Finance", lambda: self.controller.show_frame("FinancePage")),
-            ("Health/Med", lambda: self.controller.show_frame("HealthPage")),
-            ("Marketing", lambda: self.controller.show_frame("MarketingPage")),
-            ("Supply Chain", lambda: self.controller.show_frame("SupplyChainPage")),
-            ("Data Management", lambda: self.controller.show_frame("DataManagementPage")),
-            ("Scenario Builder", lambda: self.controller.show_frame("ScenarioBuilderPage")),
-            ("API Integration", lambda: self.controller.show_frame("APIIntegrationPage"))
-        ]
-
-        for text, command in buttons:
-            button = tk.Button(sidebar, text=text, command=command, fg="lightblue", bg='#ECF1F6', bd=0,
-                               highlightthickness=0, highlightbackground='#ECF1F6', relief='flat')
-            button.pack(fill='x', pady=5)
-
-class APIIntegrationPage(SidebarFrame):
+class APIIntegrationPage(tk.Frame):
     def __init__(self, parent, controller):
         super().__init__(parent, controller)
         tk.Label(self.scrollable_frame, text="API Integration", font=('Helvetica', 18), bg="white", fg="#4974a5").pack(pady=20)
@@ -249,7 +227,7 @@ class APIIntegrationPage(SidebarFrame):
         
         consume_messages()
 
-class ScenarioBuilderPage(SidebarFrame):
+class ScenarioBuilderPage(tk.Frame):
     def __init__(self, parent, controller):
         super().__init__(parent, controller)
         tk.Label(self.scrollable_frame, text="Scenario Builder", font=('Helvetica', 18), bg="white", fg="#4974a5").pack(pady=20)
@@ -544,29 +522,13 @@ class SidebarFrame(tk.Frame):
                                highlightthickness=0, highlightbackground='#ECF1F6', relief='flat')
             button.pack(fill='x', pady=5)
 
-class DashboardPage(SidebarFrame):
+
+class DashboardPage(ScrollableFrame):
     def __init__(self, parent, controller):
-        super().__init__(parent, controller)
+        super().__init__(parent)
+        self.controller = controller
+
         tk.Label(self.scrollable_frame, text="Dashboard", font=('Helvetica', 18), bg="white", fg="#4974a5").pack(pady=20)
-
-        profile_menu_frame = tk.Frame(self.scrollable_frame, bg="white")
-        profile_menu_frame.place(relx=1.0, rely=0, anchor='ne', x=-20, y=20)
-
-        profile_icon_img = tk.PhotoImage(file="../assets/profile_icon.png")
-        profile_icon_label = tk.Label(profile_menu_frame, image=profile_icon_img, bg="white")
-        profile_icon_label.image = profile_icon_img
-        profile_icon_label.pack(side="left")
-
-        menu_bar_img = tk.PhotoImage(file="../assets/menu.png")
-        menu_bar_label = tk.Label(profile_menu_frame, image=menu_bar_img, bg="white")
-        menu_bar_label.image = menu_bar_img
-        menu_bar_label.pack(side="left", padx=10)
-
-        swit_logo_img = tk.PhotoImage(file="../assets/swit_logo.png")
-        swit_logo_label = tk.Label(profile_menu_frame, image=swit_logo_img, bg="white", cursor="hand2")
-        swit_logo_label.image = swit_logo_img
-        swit_logo_label.pack(side="right")
-        swit_logo_label.bind("<Button-1>", lambda event: controller.show_frame("ChatPage"))
 
         self.config_button = tk.Button(self.scrollable_frame, text="Configure Dashboard", command=self.open_config_dialog, bg='white', fg='#4974a5')
         self.config_button.pack(pady=10)
@@ -660,14 +622,348 @@ class DashboardPage(SidebarFrame):
             {'x': ['2023-01-01', '2023-02-01'], 'y': [30, 25], 'label': 'Delivery Times'}
         ]
 
-    # Mock implementations for fetching data
-    fin = newscatcher = med = healthsg = supp_chain_opt = type('mock', (), {
-        'get_financial_data': lambda params: {'stock_prices': {'date': ['2023-01-01', '2023-02-01'], 'value': [100, 110]}, 'economic_indicators': {'date': ['2023-01-01', '2023-02-01'], 'value': [200, 190]}},
-        'get_news_data': lambda params: {'campaign_performance': {'date': ['2023-01-01', '2023-02-01'], 'value': [50, 55]}, 'social_media_metrics': {'date': ['2023-01-01', '2023-02-01'], 'value': [150, 145]}},
-        'get_medical_data': lambda params: {'patient_data': {'date': ['2023-01-01', '2023-02-01'], 'value': [70, 65]}, 'health_metrics': {'date': ['2023-01-01', '2023-02-01'], 'value': [90, 85]}},
-        'get_healthsage_data': lambda params: {'patient_data': {'date': ['2023-01-01', '2023-02-01'], 'value': [70, 65]}, 'health_metrics': {'date': ['2023-01-01', '2023-02-01'], 'value': [90, 85]}},
-        'get_supply_chain_data': lambda params: {'inventory_levels': {'date': ['2023-01-01', '2023-02-01'], 'value': [400, 390]}, 'delivery_times': {'date': ['2023-01-01', '2023-02-01'], 'value': [30, 25]}}
-    })()
+    
+
+class ReportsPage(tk.Frame):
+    def __init__(self, parent, controller):
+        super().__init__(parent)
+        self.controller = controller
+        self.scrollable_frame = tk.Frame(self, bg="white")
+        self.scrollable_frame.pack(expand=True, fill='both')
+        tk.Label(self.scrollable_frame, text="Reports", font=('Helvetica', 18), bg="white", fg="#4974a5").pack(pady=20)
+        self.create_report_tools()
+
+    def create_report_tools(self):
+        tk.Button(self.scrollable_frame, text="Load Dataset", command=self.load_dataset).pack(pady=10)
+
+        self.dataset_options = ["Dataset 1", "Dataset 2", "Dataset 3", "Loaded Dataset"]
+        self.selected_dataset = tk.StringVar(self.scrollable_frame)
+        self.selected_dataset.set(self.dataset_options[0])  # Set default option
+
+        tk.Label(self.scrollable_frame, text="Select Dataset", bg="white").pack(pady=5)
+        self.dataset_menu = tk.OptionMenu(self.scrollable_frame, self.selected_dataset, *self.dataset_options)
+        self.dataset_menu.pack(pady=5)
+
+        tk.Button(self.scrollable_frame, text="Generate Summary Report", command=self.generate_summary_report).pack(pady=10)
+        tk.Button(self.scrollable_frame, text="Create Visual Report", command=self.create_visual_report).pack(pady=10)
+        tk.Button(self.scrollable_frame, text="Export Report", command=self.export_report).pack(pady=10)
+        tk.Button(self.scrollable_frame, text="Load Previous Report", command=self.load_previous_report).pack(pady=10)
+        self.report_text = tk.Text(self.scrollable_frame, height=10, wrap='word')
+        self.report_text.pack(fill='x', padx=5, pady=5)
+
+    def load_dataset(self):
+        file_path = filedialog.askopenfilename(filetypes=[("CSV files", "*.csv"), ("Excel files", "*.xlsx")])
+        if file_path:
+            try:
+                if file_path.endswith('.csv'):
+                    data = pd.read_csv(file_path)
+                elif file_path.endswith('.xlsx'):
+                    data = pd.read_excel(file_path)
+                else:
+                    messagebox.showerror("Invalid file", "Only CSV and Excel files are supported.")
+                    return
+                
+                self.controller.data = data
+                self.dataset_options[-1] = "Loaded Dataset"
+                self.selected_dataset.set("Loaded Dataset")
+                self.dataset_menu['menu'].entryconfig(3, label="Loaded Dataset")
+                messagebox.showinfo("Info", "Dataset loaded successfully.")
+            except Exception as e:
+                messagebox.showerror("Error", f"Failed to load dataset: {e}")
+
+    def generate_summary_report(self):
+        dataset_name = self.selected_dataset.get()
+        data = self.load_data(dataset_name)
+        if data is not None:
+            summary = data.describe()
+            self.controller.report_data = summary
+            self.report_text.delete(1.0, tk.END)
+            self.report_text.insert(tk.END, summary.to_string())
+            messagebox.showinfo("Info", "Summary report generated.")
+        else:
+            messagebox.showwarning("Warning", "No data available.")
+
+    def create_visual_report(self):
+        dataset_name = self.selected_dataset.get()
+        data = self.load_data(dataset_name)
+        if data is not None:
+            figure = plt.Figure(figsize=(5, 4), dpi=100)
+            ax = figure.add_subplot(111)
+            data.hist(ax=ax)
+            canvas = FigureCanvasTkAgg(figure, self.scrollable_frame)
+            canvas.draw()
+            canvas.get_tk_widget().pack(side=tk.TOP, fill=tk.BOTH, expand=True)
+            messagebox.showinfo("Info", "Visual report created.")
+        else:
+            messagebox.showwarning("Warning", "No data available.")
+
+    def export_report(self):
+        if hasattr(self.controller, 'report_data'):
+            file_path = filedialog.asksaveasfilename(defaultextension=".csv", filetypes=[("CSV files", "*.csv")])
+            if file_path:
+                self.controller.report_data.to_csv(file_path)
+                messagebox.showinfo("Info", "Report exported.")
+        else:
+            messagebox.showwarning("Warning", "No report data to export.")
+
+    def load_previous_report(self):
+        file_path = filedialog.askopenfilename(filetypes=[("CSV files", "*.csv")])
+        if file_path:
+            self.controller.report_data = pd.read_csv(file_path)
+            self.report_text.delete(1.0, tk.END)
+            self.report_text.insert(tk.END, self.controller.report_data.to_string())
+            messagebox.showinfo("Info", "Previous report loaded.")
+
+    def load_data(self, dataset_name):
+        if dataset_name == "Dataset 1":
+            data = pd.DataFrame(np.random.randn(100, 4), columns=list('ABCD'))
+        elif dataset_name == "Dataset 2":
+            data = pd.DataFrame(np.random.randn(200, 4), columns=list('WXYZ'))
+        elif dataset_name == "Dataset 3":
+            data = pd.DataFrame(np.random.randn(150, 4), columns=list('EFGH'))
+        elif dataset_name == "Loaded Dataset" and hasattr(self.controller, 'data'):
+            data = self.controller.data
+        else:
+            data = None
+        return data
+
+class DataAnalysisPage(tk.Frame):
+    def __init__(self, parent, controller):
+        super().__init__(parent)
+        self.controller = controller
+        self.scrollable_frame = tk.Frame(self, bg="white")
+        self.scrollable_frame.pack(expand=True, fill='both')
+        tk.Label(self.scrollable_frame, text="Data Analysis Tools", font=('Helvetica', 18), bg="white", fg="#4974a5").pack(pady=20)
+        self.create_analysis_tools()
+
+    def create_analysis_tools(self):
+        tk.Button(self.scrollable_frame, text="Perform Statistical Analysis", command=self.perform_statistical_analysis).pack(pady=10)
+        tk.Button(self.scrollable_frame, text="Show Correlation Matrix", command=self.show_correlation_matrix).pack(pady=10)
+        tk.Button(self.scrollable_frame, text="Data Cleaning Tools", command=self.data_cleaning_tools).pack(pady=10)
+        tk.Button(self.scrollable_frame, text="Perform PCA", command=self.perform_pca).pack(pady=10)
+        self.analysis_text = tk.Text(self.scrollable_frame, height=10, wrap='word')
+        self.analysis_text.pack(fill='x', padx=5, pady=5)
+
+    def perform_statistical_analysis(self):
+        if hasattr(self.controller, 'data'):
+            data = self.controller.data
+            stat_results = data.describe()
+            self.analysis_text.delete(1.0, tk.END)
+            self.analysis_text.insert(tk.END, stat_results.to_string())
+            messagebox.showinfo("Info", "Statistical analysis performed.")
+        else:
+            messagebox.showwarning("Warning", "No data available.")
+
+    def show_correlation_matrix(self):
+        if hasattr(self.controller, 'data'):
+            data = self.controller.data
+            corr_matrix = data.corr()
+            self.analysis_text.delete(1.0, tk.END)
+            self.analysis_text.insert(tk.END, corr_matrix.to_string())
+            messagebox.showinfo("Info", "Correlation matrix displayed.")
+        else:
+            messagebox.showwarning("Warning", "No data available.")
+
+    def data_cleaning_tools(self):
+        if hasattr(self.controller, 'data'):
+            self.controller.data.dropna(inplace=True)
+            self.controller.data.drop_duplicates(inplace=True)
+            messagebox.showinfo("Info", "Data cleaned.")
+        else:
+            messagebox.showwarning("Warning", "No data available.")
+
+    def perform_pca(self):
+        if hasattr(self.controller, 'data'):
+            data = self.controller.data
+            numeric_data = data.select_dtypes(include=[np.number])
+            pca = PCA(n_components=2)
+            pca_result = pca.fit_transform(numeric_data)
+            self.analysis_text.delete(1.0, tk.END)
+            self.analysis_text.insert(tk.END, f"PCA Result: {pca_result}")
+            messagebox.showinfo("Info", "PCA performed.")
+        else:
+            messagebox.showwarning("Warning", "No data available.")
+
+class ModelSelectionPage(tk.Frame):
+    def __init__(self, parent, controller):
+        super().__init__(parent)
+        self.controller = controller
+        self.scrollable_frame = tk.Frame(self, bg="white")
+        self.scrollable_frame.pack(expand=True, fill='both')
+        tk.Label(self.scrollable_frame, text="Model Selection", font=('Helvetica', 18), bg="white", fg="#4974a5").pack(pady=20)
+        self.create_model_selection_tools()
+
+    def create_model_selection_tools(self):
+        tk.Button(self.scrollable_frame, text="Compare Algorithms", command=self.compare_algorithms).pack(pady=10)
+        tk.Button(self.scrollable_frame, text="Hyperparameter Tuning", command=self.hyperparameter_tuning).pack(pady=10)
+        tk.Button(self.scrollable_frame, text="Perform Cross-Validation", command=self.perform_cross_validation).pack(pady=10)
+        tk.Button(self.scrollable_frame, text="Show Model Summary", command=self.show_model_summary).pack(pady=10)
+        self.model_selection_text = tk.Text(self.scrollable_frame, height=10, wrap='word')
+        self.model_selection_text.pack(fill='x', padx=5, pady=5)
+
+    def compare_algorithms(self):
+        if hasattr(self.controller, 'data'):
+            data = self.controller.data
+            X = data.iloc[:, :-1]
+            y = data.iloc[:, -1]
+            X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+            models = {
+                'DecisionTree': DecisionTreeClassifier(),
+                # Add other models here
+            }
+            results = {}
+            for name, model in models.items():
+                model.fit(X_train, y_train)
+                y_pred = model.predict(X_test)
+                results[name] = {
+                    'Accuracy': accuracy_score(y_test, y_pred),
+                    'Precision': precision_score(y_test, y_pred, average='weighted'),
+                    'Recall': recall_score(y_test, y_pred, average='weighted'),
+                    'F1 Score': f1_score(y_test, y_pred, average='weighted')
+                }
+            self.model_selection_text.delete(1.0, tk.END)
+            self.model_selection_text.insert(tk.END, str(results))
+            messagebox.showinfo("Info", "Algorithms compared.")
+        else:
+            messagebox.showwarning("Warning", "No data available.")
+
+    def hyperparameter_tuning(self):
+        if hasattr(self.controller, 'data'):
+            data = self.controller.data
+            X = data.iloc[:, :-1]
+            y = data.iloc[:, -1]
+            X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+            param_grid = {
+                'max_depth': [3, 5, 7],
+                'min_samples_split': [2, 5, 10]
+            }
+            grid_search = GridSearchCV(DecisionTreeClassifier(), param_grid, cv=3, scoring='accuracy')
+            grid_search.fit(X_train, y_train)
+            best_params = grid_search.best_params_
+            self.model_selection_text.delete(1.0, tk.END)
+            self.model_selection_text.insert(tk.END, f"Best Params: {best_params}")
+            messagebox.showinfo("Info", "Hyperparameter tuning performed.")
+        else:
+            messagebox.showwarning("Warning", "No data available.")
+
+    def perform_cross_validation(self):
+        if hasattr(self.controller, 'data'):
+            data = self.controller.data
+            X = data.iloc[:, :-1]
+            y = data.iloc[:, -1]
+            model = DecisionTreeClassifier()
+            scores = cross_val_score(model, X, y, cv=5)
+            self.model_selection_text.delete(1.0, tk.END)
+            self.model_selection_text.insert(tk.END, f"Cross-Validation Scores: {scores}")
+            messagebox.showinfo("Info", "Cross-validation performed.")
+        else:
+            messagebox.showwarning("Warning", "No data available.")
+
+    def show_model_summary(self):
+        if hasattr(self.controller, 'model'):
+            model = self.controller.model
+            summary = str(model)
+            self.model_selection_text.delete(1.0, tk.END)
+            self.model_selection_text.insert(tk.END, summary)
+            messagebox.showinfo("Info", "Model summary displayed.")
+        else:
+            messagebox.showwarning("Warning", "No model available.")
+
+class DataManagementPage(tk.Frame):
+    def __init__(self, parent, controller):
+        super().__init__(parent)
+        self.controller = controller
+        self.scrollable_frame = tk.Frame(self, bg="white")
+        self.scrollable_frame.pack(expand=True, fill='both')
+        tk.Label(self.scrollable_frame, text="Data Management", font=('Helvetica', 18), bg="white", fg="#4974a5").pack(pady=20)
+
+        self.upload_button = tk.Button(self.scrollable_frame, text="Upload CSV/Excel", command=self.upload_file)
+        self.upload_button.pack(pady=10)
+
+        self.data_text = tk.Text(self.scrollable_frame, height=20, wrap='word')
+        self.data_text.pack(fill='x', padx=5, pady=5)
+
+        self.data_cleaning_button = tk.Button(self.scrollable_frame, text="Clean Data", command=self.clean_data)
+        self.data_cleaning_button.pack(pady=10)
+
+        self.data_transform_button = tk.Button(self.scrollable_frame, text="Transform Data", command=self.transform_data)
+        self.data_transform_button.pack(pady=10)
+
+        self.save_version_button = tk.Button(self.scrollable_frame, text="Save Version", command=self.save_version)
+        self.save_version_button.pack(pady=10)
+
+        self.revert_version_button = tk.Button(self.scrollable_frame, text="Revert to Previous Version", command=self.revert_version)
+        self.revert_version_button.pack(pady=10)
+
+        self.data = None
+        self.data_versions = []
+        self.current_version_index = -1
+
+    def save_version(self):
+        if self.data is not None:
+            self.data_versions.append(self.data.copy())
+            self.current_version_index = len(self.data_versions) - 1
+            messagebox.showinfo("Version Saved", "Current data version saved.")
+
+    def upload_file(self):
+        file_path = filedialog.askopenfilename()
+        if file_path:
+            if file_path.endswith('.csv'):
+                self.data = pd.read_csv(file_path)
+            elif file_path.endswith('.xlsx'):
+                self.data = pd.read_excel(file_path)
+            else:
+                messagebox.showerror("Invalid file", "Only CSV and Excel files are supported.")
+                return
+            self.save_version()
+            self.display_data(self.data)
+
+    def clean_data(self):
+        if self.data is None:
+            messagebox.showwarning("No data", "Please upload data first.")
+            return
+
+        # Handle missing values
+        self.data.fillna(method='ffill', inplace=True)
+
+        # Drop duplicates
+        self.data.drop_duplicates(inplace=True)
+
+        # Example outlier handling (removing values beyond 3 standard deviations)
+        numeric_cols = self.data.select_dtypes(include=['float64', 'int64']).columns
+        for col in numeric_cols:
+            mean = self.data[col].mean()
+            std = self.data[col].std()
+            self.data = self.data[(self.data[col] >= mean - 3 * std) & (self.data[col] <= mean + 3 * std)]
+
+        self.save_version()
+        self.display_data(self.data)
+
+    def transform_data(self):
+        if self.data is None:
+            messagebox.showwarning("No data", "Please upload data first.")
+            return
+
+        # Example transformation (standard scaling)
+        numeric_cols = self.data.select_dtypes(include=['float64', 'int64']).columns
+        scaler = StandardScaler()
+        self.data[numeric_cols] = scaler.fit_transform(self.data[numeric_cols])
+
+        self.save_version()
+        self.display_data(self.data)
+
+    def display_data(self, data):
+        self.data_text.delete(1.0, tk.END)
+        self.data_text.insert(tk.END, data.head().to_string())
+
+    def revert_version(self):
+        if self.current_version_index > 0:
+            self.current_version_index -= 1
+            self.data = self.data_versions[self.current_version_index]
+            self.display_data(self.data)
+            messagebox.showinfo("Version Reverted", "Reverted to previous data version.")
+        else:
+            messagebox.showwarning("No previous version", "No previous version to revert to.")
 
 
 # ------------------------------------- # ------------------------------------- # ------------------------------------- 
@@ -739,7 +1035,7 @@ class SidebarFrame(tk.Frame):
                                highlightthickness=0, highlightbackground='#ECF1F6', relief='flat')
             button.pack(fill='x', pady=5)
 
-class FinancePage(SidebarFrame):
+class FinancePage(tk.Frame):
     def __init__(self, parent, controller):
         super().__init__(parent, controller)
         self.create_finance_panel()
@@ -870,7 +1166,7 @@ class FinancePage(SidebarFrame):
         canvas.draw()
         canvas.get_tk_widget().pack(side=tk.TOP, fill=tk.BOTH, expand=True)
 
-class MarketingPage(SidebarFrame):
+class MarketingPage(tk.Frame):
     def __init__(self, parent, controller):
         super().__init__(parent, controller)
         self.create_marketing_panel()
@@ -1000,7 +1296,7 @@ class MarketingPage(SidebarFrame):
         canvas.draw()
         canvas.get_tk_widget().pack(side=tk.TOP, fill=tk.BOTH, expand=True)
 
-class HealthPage(SidebarFrame):
+class HealthPage(tk.Frame):
     def __init__(self, parent, controller):
         super().__init__(parent, controller)
         self.create_health_panel()
@@ -1155,7 +1451,7 @@ class HealthPage(SidebarFrame):
         canvas.draw()
         canvas.get_tk_widget().pack(side=tk.TOP, fill=tk.BOTH, expand=True)
 
-class SupplyChainPage(SidebarFrame):
+class SupplyChainPage(tk.Frame):
     def __init__(self, parent, controller):
         super().__init__(parent, controller)
         self.create_supply_chain_panel()
@@ -1307,243 +1603,7 @@ class SupplyChainPage(SidebarFrame):
 
 # ---------------------------------------------------------------------------------------
 
-class ReportsPage(SidebarFrame):
-    def __init__(self, parent, controller):
-        super().__init__(parent, controller)
-        tk.Label(self.scrollable_frame, text="Reports", font=('Helvetica', 18), bg="white", fg="#4974a5").pack(pady=20)
-        self.create_report_tools()
-
-    def create_report_tools(self):
-        tk.Button(self.scrollable_frame, text="Load Dataset", command=self.load_dataset).pack(pady=10)
-
-        self.dataset_options = ["Dataset 1", "Dataset 2", "Dataset 3", "Loaded Dataset"]
-        self.selected_dataset = tk.StringVar(self.scrollable_frame)
-        self.selected_dataset.set(self.dataset_options[0])  # Set default option
-
-        tk.Label(self.scrollable_frame, text="Select Dataset", bg="white").pack(pady=5)
-        self.dataset_menu = tk.OptionMenu(self.scrollable_frame, self.selected_dataset, *self.dataset_options)
-        self.dataset_menu.pack(pady=5)
-
-        tk.Button(self.scrollable_frame, text="Generate Summary Report", command=self.generate_summary_report).pack(pady=10)
-        tk.Button(self.scrollable_frame, text="Create Visual Report", command=self.create_visual_report).pack(pady=10)
-        tk.Button(self.scrollable_frame, text="Export Report", command=self.export_report).pack(pady=10)
-        tk.Button(self.scrollable_frame, text="Load Previous Report", command=self.load_previous_report).pack(pady=10)
-        self.report_text = tk.Text(self.scrollable_frame, height=10, wrap='word')
-        self.report_text.pack(fill='x', padx=5, pady=5)
-
-    def load_dataset(self):
-        file_path = filedialog.askopenfilename(filetypes=[("CSV files", "*.csv"), ("Excel files", "*.xlsx")])
-        if file_path:
-            try:
-                if file_path.endswith('.csv'):
-                    data = pd.read_csv(file_path)
-                elif file_path.endswith('.xlsx'):
-                    data = pd.read_excel(file_path)
-                else:
-                    messagebox.showerror("Invalid file", "Only CSV and Excel files are supported.")
-                    return
-                
-                self.controller.data = data
-                self.dataset_options[-1] = "Loaded Dataset"
-                self.selected_dataset.set("Loaded Dataset")
-                self.dataset_menu['menu'].entryconfig(3, label="Loaded Dataset")
-                messagebox.showinfo("Info", "Dataset loaded successfully.")
-            except Exception as e:
-                messagebox.showerror("Error", f"Failed to load dataset: {e}")
-
-    def generate_summary_report(self):
-        dataset_name = self.selected_dataset.get()
-        data = self.load_data(dataset_name)
-        if data is not None:
-            summary = data.describe()
-            self.controller.report_data = summary
-            self.report_text.delete(1.0, tk.END)
-            self.report_text.insert(tk.END, summary.to_string())
-            messagebox.showinfo("Info", "Summary report generated.")
-        else:
-            messagebox.showwarning("Warning", "No data available.")
-
-    def create_visual_report(self):
-        dataset_name = self.selected_dataset.get()
-        data = self.load_data(dataset_name)
-        if data is not None:
-            figure = plt.Figure(figsize=(5, 4), dpi=100)
-            ax = figure.add_subplot(111)
-            data.hist(ax=ax)
-            canvas = FigureCanvasTkAgg(figure, self.scrollable_frame)
-            canvas.draw()
-            canvas.get_tk_widget().pack(side=tk.TOP, fill=tk.BOTH, expand=True)
-            messagebox.showinfo("Info", "Visual report created.")
-        else:
-            messagebox.showwarning("Warning", "No data available.")
-
-    def export_report(self):
-        if hasattr(self.controller, 'report_data'):
-            file_path = filedialog.asksaveasfilename(defaultextension=".csv", filetypes=[("CSV files", "*.csv")])
-            if file_path:
-                self.controller.report_data.to_csv(file_path)
-                messagebox.showinfo("Info", "Report exported.")
-        else:
-            messagebox.showwarning("Warning", "No report data to export.")
-
-    def load_previous_report(self):
-        file_path = filedialog.askopenfilename(filetypes=[("CSV files", "*.csv")])
-        if file_path:
-            self.controller.report_data = pd.read_csv(file_path)
-            self.report_text.delete(1.0, tk.END)
-            self.report_text.insert(tk.END, self.controller.report_data.to_string())
-            messagebox.showinfo("Info", "Previous report loaded.")
-
-    def load_data(self, dataset_name):
-        if dataset_name == "Dataset 1":
-            data = pd.DataFrame(np.random.randn(100, 4), columns=list('ABCD'))
-        elif dataset_name == "Dataset 2":
-            data = pd.DataFrame(np.random.randn(200, 4), columns=list('WXYZ'))
-        elif dataset_name == "Dataset 3":
-            data = pd.DataFrame(np.random.randn(150, 4), columns=list('EFGH'))
-        elif dataset_name == "Loaded Dataset" and hasattr(self.controller, 'data'):
-            data = self.controller.data
-        else:
-            data = None
-        return data
-
-class DataAnalysisPage(SidebarFrame):
-    def __init__(self, parent, controller):
-        super().__init__(parent, controller)
-        tk.Label(self.scrollable_frame, text="Data Analysis Tools", font=('Helvetica', 18), bg="white", fg="#4974a5").pack(pady=20)
-        self.create_analysis_tools()
-
-    def create_analysis_tools(self):
-        tk.Button(self.scrollable_frame, text="Perform Statistical Analysis", command=self.perform_statistical_analysis).pack(pady=10)
-        tk.Button(self.scrollable_frame, text="Show Correlation Matrix", command=self.show_correlation_matrix).pack(pady=10)
-        tk.Button(self.scrollable_frame, text="Data Cleaning Tools", command=self.data_cleaning_tools).pack(pady=10)
-        tk.Button(self.scrollable_frame, text="Perform PCA", command=self.perform_pca).pack(pady=10)
-        self.analysis_text = tk.Text(self.scrollable_frame, height=10, wrap='word')
-        self.analysis_text.pack(fill='x', padx=5, pady=5)
-
-    def perform_statistical_analysis(self):
-        if hasattr(self.controller, 'data'):
-            data = self.controller.data
-            stat_results = data.describe()
-            self.analysis_text.delete(1.0, tk.END)
-            self.analysis_text.insert(tk.END, stat_results.to_string())
-            messagebox.showinfo("Info", "Statistical analysis performed.")
-        else:
-            messagebox.showwarning("Warning", "No data available.")
-
-    def show_correlation_matrix(self):
-        if hasattr(self.controller, 'data'):
-            data = self.controller.data
-            corr_matrix = data.corr()
-            self.analysis_text.delete(1.0, tk.END)
-            self.analysis_text.insert(tk.END, corr_matrix.to_string())
-            messagebox.showinfo("Info", "Correlation matrix displayed.")
-        else:
-            messagebox.showwarning("Warning", "No data available.")
-
-    def data_cleaning_tools(self):
-        if hasattr(self.controller, 'data'):
-            self.controller.data.dropna(inplace=True)
-            self.controller.data.drop_duplicates(inplace=True)
-            messagebox.showinfo("Info", "Data cleaned.")
-        else:
-            messagebox.showwarning("Warning", "No data available.")
-
-    def perform_pca(self):
-        if hasattr(self.controller, 'data'):
-            data = self.controller.data
-            numeric_data = data.select_dtypes(include=[np.number])
-            pca = PCA(n_components=2)
-            pca_result = pca.fit_transform(numeric_data)
-            self.analysis_text.delete(1.0, tk.END)
-            self.analysis_text.insert(tk.END, f"PCA Result: {pca_result}")
-            messagebox.showinfo("Info", "PCA performed.")
-        else:
-            messagebox.showwarning("Warning", "No data available.")
-
-class ModelSelectionPage(SidebarFrame):
-    def __init__(self, parent, controller):
-        super().__init__(parent, controller)
-        tk.Label(self.scrollable_frame, text="Model Selection", font=('Helvetica', 18), bg="white", fg="#4974a5").pack(pady=20)
-        self.create_model_selection_tools()
-
-    def create_model_selection_tools(self):
-        tk.Button(self.scrollable_frame, text="Compare Algorithms", command=self.compare_algorithms).pack(pady=10)
-        tk.Button(self.scrollable_frame, text="Hyperparameter Tuning", command=self.hyperparameter_tuning).pack(pady=10)
-        tk.Button(self.scrollable_frame, text="Perform Cross-Validation", command=self.perform_cross_validation).pack(pady=10)
-        tk.Button(self.scrollable_frame, text="Show Model Summary", command=self.show_model_summary).pack(pady=10)
-        self.model_selection_text = tk.Text(self.scrollable_frame, height=10, wrap='word')
-        self.model_selection_text.pack(fill='x', padx=5, pady=5)
-
-    def compare_algorithms(self):
-        if hasattr(self.controller, 'data'):
-            data = self.controller.data
-            X = data.iloc[:, :-1]
-            y = data.iloc[:, -1]
-            X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
-            models = {
-                'DecisionTree': DecisionTreeClassifier(),
-                # Add other models here
-            }
-            results = {}
-            for name, model in models.items():
-                model.fit(X_train, y_train)
-                y_pred = model.predict(X_test)
-                results[name] = {
-                    'Accuracy': accuracy_score(y_test, y_pred),
-                    'Precision': precision_score(y_test, y_pred, average='weighted'),
-                    'Recall': recall_score(y_test, y_pred, average='weighted'),
-                    'F1 Score': f1_score(y_test, y_pred, average='weighted')
-                }
-            self.model_selection_text.delete(1.0, tk.END)
-            self.model_selection_text.insert(tk.END, str(results))
-            messagebox.showinfo("Info", "Algorithms compared.")
-        else:
-            messagebox.showwarning("Warning", "No data available.")
-
-    def hyperparameter_tuning(self):
-        if hasattr(self.controller, 'data'):
-            data = self.controller.data
-            X = data.iloc[:, :-1]
-            y = data.iloc[:, -1]
-            X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
-            param_grid = {
-                'max_depth': [3, 5, 7],
-                'min_samples_split': [2, 5, 10]
-            }
-            grid_search = GridSearchCV(DecisionTreeClassifier(), param_grid, cv=3, scoring='accuracy')
-            grid_search.fit(X_train, y_train)
-            best_params = grid_search.best_params_
-            self.model_selection_text.delete(1.0, tk.END)
-            self.model_selection_text.insert(tk.END, f"Best Params: {best_params}")
-            messagebox.showinfo("Info", "Hyperparameter tuning performed.")
-        else:
-            messagebox.showwarning("Warning", "No data available.")
-
-    def perform_cross_validation(self):
-        if hasattr(self.controller, 'data'):
-            data = self.controller.data
-            X = data.iloc[:, :-1]
-            y = data.iloc[:, -1]
-            model = DecisionTreeClassifier()
-            scores = cross_val_score(model, X, y, cv=5)
-            self.model_selection_text.delete(1.0, tk.END)
-            self.model_selection_text.insert(tk.END, f"Cross-Validation Scores: {scores}")
-            messagebox.showinfo("Info", "Cross-validation performed.")
-        else:
-            messagebox.showwarning("Warning", "No data available.")
-
-    def show_model_summary(self):
-        if hasattr(self.controller, 'model'):
-            model = self.controller.model
-            summary = str(model)
-            self.model_selection_text.delete(1.0, tk.END)
-            self.model_selection_text.insert(tk.END, summary)
-            messagebox.showinfo("Info", "Model summary displayed.")
-        else:
-            messagebox.showwarning("Warning", "No model available.")
-
-class ModelTrainingPage(SidebarFrame):
+class ModelTrainingPage(tk.Frame):
     def __init__(self, parent, controller):
         super().__init__(parent, controller)
         tk.Label(self.scrollable_frame, text="Model Training", font=('Helvetica', 18), bg="white", fg="#4974a5").pack(pady=20)
@@ -1598,7 +1658,7 @@ class ModelTrainingPage(SidebarFrame):
             messagebox.showwarning("Warning", "No data available for training.")
 
 
-class ModelEvaluationPage(SidebarFrame):
+class ModelEvaluationPage(tk.Frame):
     def __init__(self, parent, controller):
         super().__init__(parent, controller)
         tk.Label(self.scrollable_frame, text="Model Evaluation", font=('Helvetica', 18), bg="white", fg="#4974a5").pack(pady=20)
@@ -1630,125 +1690,32 @@ class ModelEvaluationPage(SidebarFrame):
             messagebox.showwarning("Warning", "No model available for evaluation.")
 
 
-class ChatPage(SidebarFrame):
-    def __init__(self, parent, controller):
-        super().__init__(parent, controller)
-        tk.Label(self.scrollable_frame, text="Chat", font=('Helvetica', 18), bg="white", fg="#4974a5").pack(pady=20)
-        self.create_chat_interface()
+# class ChatPage(tk.Frame):
+#     def __init__(self, parent, controller):
+#         super().__init__(parent, controller)
+#         tk.Label(self.scrollable_frame, text="Chat", font=('Helvetica', 18), bg="white", fg="#4974a5").pack(pady=20)
+#         self.create_chat_interface()
 
-    def create_chat_interface(self):
-        self.chat_text = tk.Text(self.scrollable_frame, height=15, wrap='word')
-        self.chat_text.pack(fill='x', padx=5, pady=5)
-        self.chat_entry = tk.Entry(self.scrollable_frame)
-        self.chat_entry.pack(fill='x', padx=5, pady=5)
-        tk.Button(self.scrollable_frame, text="Send", command=self.send_message).pack(pady=10)
-        tk.Button(self.scrollable_frame, text="Back", command=lambda: self.controller.show_frame("DashboardPage")).pack(pady=10)
+#     def create_chat_interface(self):
+#         self.chat_text = tk.Text(self.scrollable_frame, height=15, wrap='word')
+#         self.chat_text.pack(fill='x', padx=5, pady=5)
+#         self.chat_entry = tk.Entry(self.scrollable_frame)
+#         self.chat_entry.pack(fill='x', padx=5, pady=5)
+#         tk.Button(self.scrollable_frame, text="Send", command=self.send_message).pack(pady=10)
+#         tk.Button(self.scrollable_frame, text="Back", command=lambda: self.controller.show_frame("DashboardPage")).pack(pady=10)
 
-    def send_message(self):
-        message = self.chat_entry.get()
-        if message:
-            self.chat_text.insert(tk.END, f"You: {message}\n")
-            self.chat_entry.delete(0, tk.END)
-            # Placeholder for sending the message to a chatbot or other users
-            self.chat_text.insert(tk.END, f"Bot: {self.generate_response(message)}\n")
+#     def send_message(self):
+#         message = self.chat_entry.get()
+#         if message:
+#             self.chat_text.insert(tk.END, f"You: {message}\n")
+#             self.chat_entry.delete(0, tk.END)
+#             # Placeholder for sending the message to a chatbot or other users
+#             self.chat_text.insert(tk.END, f"Bot: {self.generate_response(message)}\n")
 
-    def generate_response(self, message):
-        # Placeholder for generating a response from a chatbot
-        return "This is a placeholder response."
+#     def generate_response(self, message):
+#         # Placeholder for generating a response from a chatbot
+#         return "This is a placeholder response."
     
-
-class DataManagementPage(SidebarFrame):
-    def __init__(self, parent, controller):
-        super().__init__(parent, controller)
-        tk.Label(self.scrollable_frame, text="Data Management", font=('Helvetica', 18), bg="white", fg="#4974a5").pack(pady=20)
-
-        self.upload_button = tk.Button(self.scrollable_frame, text="Upload CSV/Excel", command=self.upload_file)
-        self.upload_button.pack(pady=10)
-
-        self.data_text = tk.Text(self.scrollable_frame, height=20, wrap='word')
-        self.data_text.pack(fill='x', padx=5, pady=5)
-
-        self.data_cleaning_button = tk.Button(self.scrollable_frame, text="Clean Data", command=self.clean_data)
-        self.data_cleaning_button.pack(pady=10)
-
-        self.data_transform_button = tk.Button(self.scrollable_frame, text="Transform Data", command=self.transform_data)
-        self.data_transform_button.pack(pady=10)
-
-        self.save_version_button = tk.Button(self.scrollable_frame, text="Save Version", command=self.save_version)
-        self.save_version_button.pack(pady=10)
-
-        self.revert_version_button = tk.Button(self.scrollable_frame, text="Revert to Previous Version", command=self.revert_version)
-        self.revert_version_button.pack(pady=10)
-
-        self.data = None
-        self.data_versions = []
-        self.current_version_index = -1
-
-    def save_version(self):
-        if self.data is not None:
-            self.data_versions.append(self.data.copy())
-            self.current_version_index = len(self.data_versions) - 1
-            messagebox.showinfo("Version Saved", "Current data version saved.")
-
-    def upload_file(self):
-        file_path = filedialog.askopenfilename()
-        if file_path:
-            if file_path.endswith('.csv'):
-                self.data = pd.read_csv(file_path)
-            elif file_path.endswith('.xlsx'):
-                self.data = pd.read_excel(file_path)
-            else:
-                messagebox.showerror("Invalid file", "Only CSV and Excel files are supported.")
-                return
-            self.save_version()
-            self.display_data(self.data)
-
-    def clean_data(self):
-        if self.data is None:
-            messagebox.showwarning("No data", "Please upload data first.")
-            return
-
-        # Handle missing values
-        self.data.fillna(method='ffill', inplace=True)
-
-        # Drop duplicates
-        self.data.drop_duplicates(inplace=True)
-
-        # Example outlier handling (removing values beyond 3 standard deviations)
-        numeric_cols = self.data.select_dtypes(include=['float64', 'int64']).columns
-        for col in numeric_cols:
-            mean = self.data[col].mean()
-            std = self.data[col].std()
-            self.data = self.data[(self.data[col] >= mean - 3 * std) & (self.data[col] <= mean + 3 * std)]
-
-        self.save_version()
-        self.display_data(self.data)
-
-    def transform_data(self):
-        if self.data is None:
-            messagebox.showwarning("No data", "Please upload data first.")
-            return
-
-        # Example transformation (standard scaling)
-        numeric_cols = self.data.select_dtypes(include=['float64', 'int64']).columns
-        scaler = StandardScaler()
-        self.data[numeric_cols] = scaler.fit_transform(self.data[numeric_cols])
-
-        self.save_version()
-        self.display_data(self.data)
-
-    def display_data(self, data):
-        self.data_text.delete(1.0, tk.END)
-        self.data_text.insert(tk.END, data.head().to_string())
-
-    def revert_version(self):
-        if self.current_version_index > 0:
-            self.current_version_index -= 1
-            self.data = self.data_versions[self.current_version_index]
-            self.display_data(self.data)
-            messagebox.showinfo("Version Reverted", "Reverted to previous data version.")
-        else:
-            messagebox.showwarning("No previous version", "No previous version to revert to.")
 
 if __name__ == "__main__":
     app = AIDSSApp()
